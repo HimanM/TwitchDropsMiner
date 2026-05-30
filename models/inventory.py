@@ -9,17 +9,17 @@ from typing import TYPE_CHECKING
 from functools import cached_property
 from datetime import datetime, timedelta, timezone
 
-from translate import _
-from channel import Channel
-from utils import timestamp, Game
-from exceptions import GQLException
-from constants import GQL_QUERIES, MAX_EXTRA_MINUTES, URLType, State
+from core.translate import _
+from models.channel import Channel
+from core.utils import timestamp, Game
+from core.exceptions import GQLException
+from core.constants import GQL_QUERIES, MAX_EXTRA_MINUTES, URLType, State
 
 if TYPE_CHECKING:
     from collections import abc
 
-    from twitch import Twitch
-    from constants import JsonType
+    from network.twitch import Twitch
+    from core.constants import JsonType
 
 
 logger = logging.getLogger("TwitchDrops")
@@ -397,7 +397,7 @@ class DropsCampaign:
     def eligible(self) -> bool:
         if self.has_badge_or_emote:
             return self._twitch.settings.enable_badges_emotes
-        return self.linked
+        return self.linked or self._twitch.settings.farm_unlinked
 
     @cached_property
     def has_badge_or_emote(self) -> bool:

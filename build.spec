@@ -13,7 +13,7 @@ SELF_PATH = str(Path(".").resolve())
 if SELF_PATH not in sys.path:
     sys.path.insert(0, SELF_PATH)
 
-from constants import WORKING_DIR, SITE_PACKAGES_PATH, DEFAULT_LANG
+from core.constants import WORKING_DIR, SITE_PACKAGES_PATH, DEFAULT_LANG
 
 if TYPE_CHECKING:
     from PyInstaller.building.splash import Splash

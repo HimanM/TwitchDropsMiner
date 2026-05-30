@@ -21,13 +21,13 @@ if __name__ == "__main__":
     import truststore
     truststore.inject_into_ssl()
 
-    from translate import _
-    from twitch import Twitch
-    from settings import Settings
+    from core.translate import _
+    from network.twitch import Twitch
+    from core.settings import Settings
     from version import __version__
-    from exceptions import CaptchaRequired
-    from utils import lock_file, resource_path, set_root_icon
-    from constants import LOGGING_LEVELS, SELF_PATH, FILE_FORMATTER, LOG_PATH, LOCK_PATH
+    from core.exceptions import CaptchaRequired
+    from core.utils import lock_file, resource_path, set_root_icon
+    from core.constants import LOGGING_LEVELS, SELF_PATH, FILE_FORMATTER, LOG_PATH, LOCK_PATH
 
     if TYPE_CHECKING:
         from _typeshed import SupportsWrite

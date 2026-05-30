@@ -7,15 +7,15 @@ import io
 import json
 from typing import Dict, TypedDict, NewType, TYPE_CHECKING
 
-from utils import json_load, json_save
-from constants import URLType, CACHE_PATH, CACHE_DB
+from core.utils import json_load, json_save
+from core.constants import URLType, CACHE_PATH, CACHE_DB
 
 from PIL import Image as Image_module
 from PIL.ImageTk import PhotoImage
 
 
 if TYPE_CHECKING:
-    from gui import GUIManager
+    from gui.components import GUIManager
     from PIL.Image import Image
     from typing_extensions import TypeAlias
 

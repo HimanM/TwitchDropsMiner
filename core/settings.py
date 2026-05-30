@@ -4,8 +4,8 @@ from typing import Any, TypedDict, TYPE_CHECKING
 
 from yarl import URL
 
-from utils import json_load, json_save
-from constants import SETTINGS_PATH, DEFAULT_LANG, PriorityMode
+from core.utils import json_load, json_save
+from core.constants import SETTINGS_PATH, DEFAULT_LANG, PriorityMode
 
 if TYPE_CHECKING:
     from main import ParsedArgs
@@ -22,6 +22,7 @@ class SettingsFile(TypedDict):
     tray_notifications: bool
     enable_badges_emotes: bool
     available_drops_check: bool
+    farm_unlinked: bool
     priority_mode: PriorityMode
 
 
@@ -36,6 +37,7 @@ default_settings: SettingsFile = {
     "tray_notifications": True,
     "enable_badges_emotes": False,
     "available_drops_check": False,
+    "farm_unlinked": False,
     "priority_mode": PriorityMode.PRIORITY_ONLY,
 }
 
@@ -60,6 +62,7 @@ class Settings:
     tray_notifications: bool
     enable_badges_emotes: bool
     available_drops_check: bool
+    farm_unlinked: bool
     priority_mode: PriorityMode
 
     PASSTHROUGH = ("_settings", "_args", "_altered")

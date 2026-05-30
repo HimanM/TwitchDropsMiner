@@ -3,9 +3,9 @@ from __future__ import annotations
 from collections import abc
 from typing import Any, TypedDict, TYPE_CHECKING
 
-from exceptions import MinerException
-from utils import json_load, json_save
-from constants import IS_PACKAGED, LANG_PATH, DEFAULT_LANG
+from core.exceptions import MinerException
+from core.utils import json_load, json_save
+from core.constants import IS_PACKAGED, LANG_PATH, DEFAULT_LANG
 
 if TYPE_CHECKING:
     from typing_extensions import NotRequired
@@ -172,6 +172,7 @@ class GUISettingsAdvanced(TypedDict):
     warning_text: str
     enable_badges_emotes: str
     available_drops_check: str
+    farm_unlinked: str
 
 
 class GUIPriorityModes(TypedDict):
@@ -385,6 +386,7 @@ default_translation: Translation = {
                 ),
                 "enable_badges_emotes": "Enable partial support for badges and emotes: ",
                 "available_drops_check": "Enable extra available drops check: ",
+                "farm_unlinked": "Farm unlinked drops: ",
             },
             "priority_modes": {
                 "priority_only": "Priority list only",

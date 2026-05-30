@@ -9,10 +9,10 @@ from typing import Any, Literal, TYPE_CHECKING
 
 import aiohttp
 
-from translate import _
-from exceptions import MinerException, WebsocketClosed
-from constants import PING_INTERVAL, PING_TIMEOUT, MAX_WEBSOCKETS, WS_TOPICS_LIMIT
-from utils import (
+from core.translate import _
+from core.exceptions import MinerException, WebsocketClosed
+from core.constants import PING_INTERVAL, PING_TIMEOUT, MAX_WEBSOCKETS, WS_TOPICS_LIMIT
+from core.utils import (
     CHARS_ASCII,
     chunk,
     task_wrapper,
@@ -26,9 +26,9 @@ from utils import (
 if TYPE_CHECKING:
     from collections import abc
 
-    from twitch import Twitch
-    from gui import WebsocketStatus
-    from constants import JsonType, WebsocketTopic
+    from network.twitch import Twitch
+    from gui.components import WebsocketStatus
+    from core.constants import JsonType, WebsocketTopic
 
 
 WSMsgType = aiohttp.WSMsgType

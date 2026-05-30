@@ -89,8 +89,8 @@ else:
     # NOTE: sys.argv[0] will point to gui.py when running the gui.py directly for GUI debug
     # detect these and use __file__ and main.py redirection instead
     SELF_PATH = Path(sys.argv[0]).resolve()
-    if SELF_PATH.stem == "pyinstaller" or SELF_PATH.name == "gui.py":
-        SELF_PATH = Path(__file__).with_name("main.py").resolve()
+    if SELF_PATH.stem == "pyinstaller" or SELF_PATH.name == "components.py":
+        SELF_PATH = Path(__file__).resolve().parent.parent / "main.py"
 WORKING_DIR = SELF_PATH.parent
 # Development paths
 VENV_PATH = Path(WORKING_DIR, "env")

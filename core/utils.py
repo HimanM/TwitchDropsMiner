@@ -25,9 +25,9 @@ from yarl import URL
 from PIL.ImageTk import PhotoImage
 from PIL import Image as Image_module
 
-from exceptions import ExitRequest, ReloadRequest
-from constants import IS_PACKAGED, JsonType, PriorityMode
-from constants import _resource_path as resource_path  # noqa
+from core.exceptions import ExitRequest, ReloadRequest
+from core.constants import IS_PACKAGED, JsonType, PriorityMode
+from core.constants import _resource_path as resource_path  # noqa
 
 
 _T = TypeVar("_T")  # type
@@ -142,7 +142,7 @@ def task_wrapper(
                     # critical task's death should trigger a termination.
                     # there isn't an easy and sure way to obtain the Twitch instance here,
                     # but we can improvise finding it
-                    from twitch import Twitch  # cyclic import
+                    from network.twitch import Twitch  # cyclic import
                     probe = args and args[0] or None  # extract from 'self' arg
                     if isinstance(probe, Twitch):
                         probe.close()

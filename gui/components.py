@@ -33,11 +33,11 @@ if sys.platform == "win32":
 if sys.platform == "darwin":
     import AppKit
 
-from translate import _
-from cache import ImageCache
-from exceptions import MinerException, ExitRequest
-from utils import resource_path, set_root_icon, webopen, Game, _T
-from constants import (
+from core.translate import _
+from core.cache import ImageCache
+from core.exceptions import MinerException, ExitRequest
+from core.utils import resource_path, set_root_icon, webopen, Game, _T
+from core.constants import (
     MAX_INT,
     SELF_PATH,
     IS_PACKAGED,
@@ -51,14 +51,14 @@ from constants import (
     PriorityMode,
 )
 if sys.platform == "win32":
-    from registry import RegistryKey, ValueType, ValueNotFound
+    from core.registry import RegistryKey, ValueType, ValueNotFound
 
 
 if TYPE_CHECKING:
-    from twitch import Twitch
-    from channel import Channel
-    from settings import Settings
-    from inventory import DropsCampaign, TimedDrop
+    from network.twitch import Twitch
+    from models.channel import Channel
+    from core.settings import Settings
+    from models.inventory import DropsCampaign, TimedDrop
 
 
 TK_PADDING = Union[int, Tuple[int, int], Tuple[int, int, int], Tuple[int, int, int, int]]
@@ -1566,6 +1566,7 @@ class _SettingsVars(TypedDict):
     tray_notifications: IntVar
     enable_badges_emotes: IntVar
     available_drops_check: IntVar
+    farm_unlinked: IntVar
 
 
 class SettingsPanel:
@@ -1604,6 +1605,9 @@ class SettingsPanel:
             ),
             "available_drops_check": IntVar(
                 master, int(self._settings.available_drops_check)
+            ),
+            "farm_unlinked": IntVar(
+                master, int(self._settings.farm_unlinked)
             ),
         }
         self._game_names: set[str] = set()
@@ -1739,6 +1743,18 @@ class SettingsPanel:
                 self._settings,
                 "available_drops_check",
                 bool(self._vars["available_drops_check"].get()),
+            ),
+        ).grid(column=1, row=irow, sticky="w")
+        ttk.Label(
+            advanced_center, text=_("gui", "settings", "advanced", "farm_unlinked")
+        ).grid(column=0, row=(irow := irow + 1), sticky="e")
+        ttk.Checkbutton(
+            advanced_center,
+            variable=self._vars["farm_unlinked"],
+            command=lambda: setattr(
+                self._settings,
+                "farm_unlinked",
+                bool(self._vars["farm_unlinked"].get()),
             ),
         ).grid(column=1, row=irow, sticky="w")
 

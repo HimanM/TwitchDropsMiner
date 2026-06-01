@@ -1,5 +1,7 @@
 # Twitch Drops Miner
 
+> *Note: This is a personalized fork and modification by HimanM. The original project was created by DevilXD.*
+
 This application allows you to AFK mine timed Twitch drops, without having to worry about switching channels when the one you were watching goes offline, claiming the drops, or even receiving the stream data itself. This helps you save on bandwidth and hassle.
 
 ### How It Works:
@@ -19,7 +21,7 @@ Every several seconds, the application pretends to watch a particular stream by 
 
 ### Usage:
 
-- Download and unzip [the latest release](https://github.com/DevilXD/TwitchDropsMiner/releases) - it's recommended to keep it in the folder it comes in.
+- Download and unzip [the latest release](https://github.com/HimanM/TwitchDropsMiner/releases) - it's recommended to keep it in the folder it comes in.
 - Run it and login/connect the miner to your Twitch account by using the in-app login form.
 - After a successful login, the app should fetch a list of all available campaigns and games you can mine drops for - you can then select and add games of choice to the Priority List available on the Settings tab, and then press on the `Reload` button to start processing. It will fetch a list of all applicable streams it can watch, and start mining right away. You can also manually switch to a different channel as needed.
 - If you wish to keep the miner occupied with mining anything it can, beyond what you've selected via the Priority List, you can use the Priority Mode setting to specify the mining order for the rest of the games.
@@ -61,7 +63,7 @@ Every several seconds, the application pretends to watch a particular stream by 
 - The Linux app is built and distributed using two distinct portable-executable formats: [AppImage](https://appimage.org/) and [PyInstaller](https://pyinstaller.org/).
 - There are no major differences between the two formats, but if you're looking for a recommendation, use the AppImage.
 - The Linux app should work out of the box on any modern distribution, as long as it has `glibc>=2.35`, plus a working display server.
-- Every feature of the app is expected to work on Linux just as well as it does on Windows. If you find something that's broken, please [open a new issue](https://github.com/DevilXD/TwitchDropsMiner/issues/new).
+- Every feature of the app is expected to work on Linux just as well as it does on Windows. If you find something that's broken, please [open a new issue](https://github.com/HimanM/TwitchDropsMiner/issues/new).
 - The size of the Linux app is significantly larger than the Windows app due to the inclusion of the `gtk3` library (and its dependencies), which is required for proper system tray/notifications support.
 - As an alternative to the native Linux app, you can run the Windows app via [Wine](https://www.winehq.org/) instead. It works really well!
 
@@ -69,22 +71,22 @@ Every several seconds, the application pretends to watch a particular stream by 
 
 - The macOS version is packaged using PyInstaller into a standalone `.app` bundle, distributed as a ZIP archive.
 - Since this application is not signed with a paid Apple Developer Certificate, **macOS Gatekeeper will block it** on the first run (saying it "The application is damaged and can't be opened").
-  - **To fix this**: Either open the Terminal in the folder the app is in (or navigating with `cd path/to/folder`) and enter `xattr -cr Twitch Drops Miner (by DevilXD).app` or just type `xattr -cr ` (make sure to put a space at the end), drag and drop the `Twitch Drops Miner (by DevilXD).app` file into the terminal window (this will auto-fill the path) and enter
-- Persistent files (like `cookies.jar`, `settings.json`, `lock.file` and the `cache` folder) are stored inside the application bundle in `Twitch Drops Miner (by DevilXD).app/Contents/MacOS` (to access them Right-click the application and select `Show Package Contents`)
+  - **To fix this**: Either open the Terminal in the folder the app is in (or navigating with `cd path/to/folder`) and enter `xattr -cr Twitch Drops Miner (by HimanM).app` or just type `xattr -cr ` (make sure to put a space at the end), drag and drop the `Twitch Drops Miner (by HimanM).app` file into the terminal window (this will auto-fill the path) and enter
+- Persistent files (like `cookies.jar`, `settings.json`, `lock.file` and the `cache` folder) are stored inside the application bundle in `Twitch Drops Miner (by HimanM).app/Contents/MacOS` (to access them Right-click the application and select `Show Package Contents`)
 
 ### Advanced Usage:
 
-If you'd be interested in running the latest master from source or building your own executable, see the wiki page explaining how to do so: https://github.com/DevilXD/TwitchDropsMiner/wiki/Setting-up-the-environment,-building-and-running
+If you'd be interested in running the latest master from source or building your own executable, see the wiki page explaining how to do so: https://github.com/HimanM/TwitchDropsMiner/wiki/Setting-up-the-environment,-building-and-running
 
 ### Support
 
 If you'd encounter any issues with the miner:
 
-- Please see the [troubleshooting page](https://github.com/DevilXD/TwitchDropsMiner/wiki/Troubleshooting) for some common issues and their explanation.  
-- Please [search the issues page](https://github.com/DevilXD/TwitchDropsMiner/issues?q=sort%3Aupdated-desc%20is%3Aissue) to see if your issue hasn't been reported yet.  
+- Please see the [troubleshooting page](https://github.com/HimanM/TwitchDropsMiner/wiki/Troubleshooting) for some common issues and their explanation.  
+- Please [search the issues page](https://github.com/HimanM/TwitchDropsMiner/issues?q=sort%3Aupdated-desc%20is%3Aissue) to see if your issue hasn't been reported yet.  
 - If it's not been reported yet, feel free to open a new issue, describing your problem.
 
-If you like the application and found it useful, please consider donating a small amount of money to support me. Thank you!
+If you like the application and found it useful, please consider donating to the original creator, DevilXD. Thank you!
 
 <div align="center">
 
@@ -129,7 +131,7 @@ This means that features such as:
 
 ..., are most likely not going to be a feature, ever. You're welcome to search through the existing issues to comment on your point of view on the relevant matters, where applicable. Otherwise, most of the new issues that go against these goals will be closed and the user will be pointed to this paragraph.
 
-For more context about these goals, please check out these issues: [#161](https://github.com/DevilXD/TwitchDropsMiner/issues/161), [#105](https://github.com/DevilXD/TwitchDropsMiner/issues/105), [#84](https://github.com/DevilXD/TwitchDropsMiner/issues/84)
+For more context about these goals, please check out these issues: [#161](https://github.com/HimanM/TwitchDropsMiner/issues/161), [#105](https://github.com/HimanM/TwitchDropsMiner/issues/105), [#84](https://github.com/HimanM/TwitchDropsMiner/issues/84)
 
 ### Credits:
 

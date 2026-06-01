@@ -1905,7 +1905,7 @@ class SettingsPanel:
 
     def _get_mac_autostart_filepath(self) -> Path:
         return Path(
-            Path.home(), f"Library/LaunchAgents/com.devilxd.{self.AUTOSTART_NAME.lower()}.plist"
+            Path.home(), f"Library/LaunchAgents/com.himanm.{self.AUTOSTART_NAME.lower()}.plist"
         )
 
     def _query_autostart(self) -> bool:
@@ -1970,7 +1970,7 @@ class SettingsPanel:
             if enabled:
                 command_parts = shlex.split(self._get_autostart_path())
                 plist_data = {
-                    "Label": f"com.devilxd.{self.AUTOSTART_NAME.lower()}",
+                    "Label": f"com.himanm.{self.AUTOSTART_NAME.lower()}",
                     "ProgramArguments": command_parts,
                     "RunAtLoad": True,
                 }
@@ -2135,32 +2135,38 @@ class HelpTab:
         about.columnconfigure(2, weight=1)
         # About - created by
         ttk.Label(
-            about, text="Application created by: ", anchor="e"
+            about, text="Forked & Modified by: ", anchor="e"
         ).grid(column=0, row=0, sticky="nsew")
+        ttk.Label(
+            about, text="HimanM", anchor="w"
+        ).grid(column=1, row=0, sticky="nsew")
+        # About - original author
+        ttk.Label(
+            about, text="Original App by: ", anchor="e"
+        ).grid(column=0, row=1, sticky="nsew")
         LinkLabel(
             about, link="https://github.com/DevilXD", text="DevilXD"
-        ).grid(column=1, row=0, sticky="nsew")
+        ).grid(column=1, row=1, sticky="nsew")
         # About - repo link
-        ttk.Label(about, text="Repository: ", anchor="e").grid(column=0, row=1, sticky="nsew")
+        ttk.Label(about, text="Repository: ", anchor="e").grid(column=0, row=2, sticky="nsew")
         LinkLabel(
             about,
-            link="https://github.com/DevilXD/TwitchDropsMiner",
-            text="https://github.com/DevilXD/TwitchDropsMiner",
-        ).grid(column=1, row=1, sticky="nsew")
+            link="https://github.com/HimanM/TwitchDropsMiner",
+            text="https://github.com/HimanM/TwitchDropsMiner",
+        ).grid(column=1, row=2, sticky="nsew")
         # About - donate
         ttk.Separator(
             about, orient="horizontal"
-        ).grid(column=0, row=2, columnspan=3, sticky="nsew")
-        ttk.Label(about, text="Donate: ", anchor="e").grid(column=0, row=3, sticky="nsew")
+        ).grid(column=0, row=3, columnspan=3, sticky="nsew")
+        ttk.Label(about, text="Donate (Original Creator): ", anchor="e").grid(column=0, row=4, sticky="nsew")
         LinkLabel(
             about,
             link="https://www.buymeacoffee.com/DevilXD",
             text=(
-                "If you like the application and found it useful, "
-                "please consider donating a small amount of money to support me. Thank you!"
+                "Please consider donating to the original creator, DevilXD."
             ),
             wraplength=self.WIDTH,
-        ).grid(column=1, row=3, sticky="nsew")
+        ).grid(column=1, row=4, sticky="nsew")
         # Useful links
         links = ttk.LabelFrame(
             center_frame, padding=(4, 0, 4, 4), text=_("gui", "help", "links", "name")

@@ -82,8 +82,8 @@ If you'd be interested in running the latest master from source or building your
 
 If you'd encounter any issues with the miner:
 
-- Please see the [troubleshooting page](https://github.com/HimanM/TwitchDropsMiner/wiki/Troubleshooting) for some common issues and their explanation.  
-- Please [search the issues page](https://github.com/HimanM/TwitchDropsMiner/issues?q=sort%3Aupdated-desc%20is%3Aissue) to see if your issue hasn't been reported yet.  
+- Please see the [troubleshooting page](https://github.com/DevilXD/TwitchDropsMiner/wiki/Troubleshooting) for some common issues and their explanation.  
+- Please [search the issues page](https://github.com/DevilXD/TwitchDropsMiner/issues?q=sort%3Aupdated-desc%20is%3Aissue) to see if your issue hasn't been reported yet.  
 - If it's not been reported yet, feel free to open a new issue, describing your problem.
 
 If you like the application and found it useful, please consider donating to the original creator, DevilXD. Thank you!
@@ -131,7 +131,7 @@ This means that features such as:
 
 ..., are most likely not going to be a feature, ever. You're welcome to search through the existing issues to comment on your point of view on the relevant matters, where applicable. Otherwise, most of the new issues that go against these goals will be closed and the user will be pointed to this paragraph.
 
-For more context about these goals, please check out these issues: [#161](https://github.com/HimanM/TwitchDropsMiner/issues/161), [#105](https://github.com/HimanM/TwitchDropsMiner/issues/105), [#84](https://github.com/HimanM/TwitchDropsMiner/issues/84)
+For more context about these goals, please check out these issues: [#161](https://github.com/DevilXD/TwitchDropsMiner/issues/161), [#105](https://github.com/DevilXD/TwitchDropsMiner/issues/105), [#84](https://github.com/DevilXD/TwitchDropsMiner/issues/84)
 
 ### Credits:
 

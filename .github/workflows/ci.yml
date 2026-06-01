@@ -314,41 +314,33 @@ jobs:
       contents: write
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up variables
         id: vars
         run: |
           echo "date_now=$(date --rfc-3339=seconds)" >> "${GITHUB_OUTPUT}"
+          echo "app_version=$(python3 -c 'from version import __version__ as v; print(v)')" >> "${GITHUB_OUTPUT}"
+          echo "sha_short=$(git rev-parse --short HEAD)" >> "${GITHUB_OUTPUT}"
 
       - name: Download build artifacts from previous jobs
         uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: Delete the existing pre-release (if present)
-        run: |
-          TAG=dev-build
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release delete "$TAG" --cleanup-tag --yes --repo "$GITHUB_REPOSITORY"
-          else
-            echo "No $TAG release; skipping delete"
-          fi
-        env:
-          GITHUB_TOKEN: ${{github.token}}
-
-      - name: Create a new dev build release
+      - name: Create a new release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
           artifacts: artifacts/*/*
           body: |
-            **This is an automatically generated in-development pre-release version of the application, that includes the latest master branch changes.**
-            **⚠️ This build is not stable and may end up terminating with a fatal error. ⚠️**
-            **Use at your own risk.**
+            **Twitch Drops Miner Release**
 
-            - Last build date: `${{steps.vars.outputs.date_now}}`
+            - Build date: `${{steps.vars.outputs.date_now}}`
             - Reference commit: ${{github.sha}}
-          name: Development build
-          prerelease: true
+          name: "Release v${{steps.vars.outputs.app_version}}"
+          prerelease: false
           removeArtifacts: true
-          tag: dev-build
+          tag: "v${{steps.vars.outputs.app_version}}"

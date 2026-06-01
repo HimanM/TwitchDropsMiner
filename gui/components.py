@@ -8,6 +8,7 @@ import ctypes
 import asyncio
 import logging
 import plistlib
+import pystray
 import tkinter as tk
 from pathlib import Path
 from collections import abc
@@ -19,8 +20,6 @@ from functools import partial, cached_property
 from datetime import datetime, timedelta, timezone
 from tkinter import Tk, ttk, StringVar, DoubleVar, IntVar
 from typing import Any, Union, Tuple, TypedDict, NoReturn, Generic, TYPE_CHECKING
-
-import pystray
 from yarl import URL
 from PIL.ImageTk import PhotoImage
 from PIL import Image as Image_module
@@ -1748,7 +1747,7 @@ class SettingsPanel:
         ttk.Label(
             advanced_center, text=_("gui", "settings", "advanced", "farm_unlinked")
         ).grid(column=0, row=(irow := irow + 1), sticky="e")
-        ttk.Checkbutton(
+        self._farm_unlinked_checkbox = ttk.Checkbutton(
             advanced_center,
             variable=self._vars["farm_unlinked"],
             command=lambda: setattr(
@@ -1756,7 +1755,14 @@ class SettingsPanel:
                 "farm_unlinked",
                 bool(self._vars["farm_unlinked"].get()),
             ),
-        ).grid(column=1, row=irow, sticky="w")
+        )
+        self._farm_unlinked_checkbox.grid(column=1, row=irow, sticky="w")
+        ttk.Label(
+            advanced_center,
+            text="(Works only when Priority Mode is 'Priority list only')",
+            foreground="gray",
+            font=("TkDefaultFont", 8)
+        ).grid(column=0, row=(irow := irow + 1), columnspan=2)
 
         # Priority section
         priority_frame = ttk.LabelFrame(
@@ -1860,6 +1866,7 @@ class SettingsPanel:
         ).grid(column=1, row=0)
 
         self._vars["autostart"].set(self._query_autostart())
+        self.priority_mode()
 
     def clear_selection(self) -> None:
         self._priority_list.selection_clear(0, "end")
@@ -2052,12 +2059,20 @@ class SettingsPanel:
         self._settings.alter()
         self.update_priority_choices()
 
-    def priority_mode(self, event: tk.Event[ttk.Combobox]) -> None:
+    def priority_mode(self, event: tk.Event[ttk.Combobox] | None = None) -> None:
         mode_name: str = self._vars["priority_mode"].get()
         for value, name in self.PRIORITY_MODES.items():
             if mode_name == name:
                 self._settings.priority_mode = value
                 break
+        
+        if hasattr(self, '_farm_unlinked_checkbox'):
+            if self._settings.priority_mode is PriorityMode.PRIORITY_ONLY:
+                self._farm_unlinked_checkbox.state(['!disabled'])
+            else:
+                self._vars["farm_unlinked"].set(0)
+                self._settings.farm_unlinked = False
+                self._farm_unlinked_checkbox.state(['disabled'])
 
     def exclude_add(self) -> None:
         game_name: str = self._exclude_entry.get()

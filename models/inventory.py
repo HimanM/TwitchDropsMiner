@@ -13,7 +13,7 @@ from core.translate import _
 from models.channel import Channel
 from core.utils import timestamp, Game
 from core.exceptions import GQLException
-from core.constants import GQL_QUERIES, MAX_EXTRA_MINUTES, URLType, State
+from core.constants import GQL_QUERIES, MAX_EXTRA_MINUTES, URLType, State, PriorityMode
 
 if TYPE_CHECKING:
     from collections import abc
@@ -397,7 +397,13 @@ class DropsCampaign:
     def eligible(self) -> bool:
         if self.has_badge_or_emote:
             return self._twitch.settings.enable_badges_emotes
-        return self.linked or self._twitch.settings.farm_unlinked
+        if self.linked:
+            return True
+            
+        if self._twitch.settings.farm_unlinked and self._twitch.settings.priority_mode is PriorityMode.PRIORITY_ONLY:
+            return self.game.name in self._twitch.settings.priority
+            
+        return False
 
     @cached_property
     def has_badge_or_emote(self) -> bool:

@@ -11,6 +11,7 @@ Every several seconds, the application pretends to watch a particular stream by 
 ### Features:
 
 - Stream-less drop mining - save on bandwidth.
+- **Farm Unlinked Drops**: The original author explicitly avoided adding an option to farm unlinked drops. However, this feature was specifically added in this fork to bypass a common Twitch bug where correctly connected accounts are still displayed as "Not Linked" (which previously prevented mining even when drops could still be successfully earned).
 - Game priority and exclusion lists, allowing you to focus on mining what you want, in the order you want, and ignore what you don't want.
 - Sharded websocket connection, allowing for tracking up to `199` channels at the same time.
 - Automatic drop campaigns discovery based on linked accounts (requires you to do [account linking](https://www.twitch.tv/drops/campaigns) yourself though).

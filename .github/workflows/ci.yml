@@ -4,7 +4,15 @@ on:
   push:
     branches:
       - "main"
+    paths-ignore:
+      - 'README.md'
+      - 'manual.txt'
+      - 'LICENSE'
   pull_request:
+    paths-ignore:
+      - 'README.md'
+      - 'manual.txt'
+      - 'LICENSE'
   workflow_dispatch:
 
 env:

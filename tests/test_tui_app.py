@@ -6,7 +6,7 @@ from tui.state import DropSnapshot, TUIState
 
 
 class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
-    def make_app(self, state=None):
+    def make_app(self, state=None, *, on_ready=None):
         return TwitchDropsTUI(
             state or TUIState(),
             on_close=lambda: None,
@@ -16,6 +16,7 @@ class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
             on_save_settings=lambda priority, exclude: None,
             on_cycle_priority_mode=lambda: None,
             on_toggle_farm_unlinked=lambda: None,
+            on_ready=on_ready,
         )
 
     def test_refresh_later_waits_until_app_is_ready(self):
@@ -37,6 +38,19 @@ class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
         app = self.make_app(state)
 
         app.refresh_login()
+
+    async def test_ready_callback_runs_after_initial_refresh(self):
+        ready = []
+        app = self.make_app(on_ready=lambda: ready.append("ready"))
+
+        with patch.object(app, "call_after_refresh", wraps=app.call_after_refresh) as after_refresh:
+            async with app.run_test(size=(80, 24)) as pilot:
+                await pilot.pause()
+
+        self.assertTrue(ready)
+        self.assertTrue(
+            any(call.args and call.args[0] is app._on_ready for call in after_refresh.call_args_list)
+        )
 
     async def test_app_mounts_and_updates_progress_bars(self):
         state = TUIState()

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, TYPE_CHECKING
@@ -27,6 +28,9 @@ if TYPE_CHECKING:
     from models.channel import Channel
     from models.inventory import DropsCampaign, TimedDrop
     from network.twitch import Twitch
+
+
+logger = logging.getLogger("TwitchDrops")
 
 
 @dataclass(slots=True)
@@ -384,9 +388,13 @@ class TUIManager:
             on_save_settings=self._save_settings,
             on_cycle_priority_mode=self._cycle_priority_mode,
             on_toggle_farm_unlinked=self._toggle_farm_unlinked,
-            on_ready=self._app_ready.set,
+            on_ready=self._mark_app_ready,
         )
         self._app_task = asyncio.create_task(self._app.run_async())
+
+    def _mark_app_ready(self) -> None:
+        logger.info("Terminal UI ready.")
+        self._app_ready.set()
 
     async def wait_until_ready(self) -> None:
         if self._app is None or self._app_ready.is_set():

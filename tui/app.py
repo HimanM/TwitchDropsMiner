@@ -176,7 +176,8 @@ class TwitchDropsTUI(App[None]):
         self._setup_tables()
         self._ready_for_refresh = True
         self.refresh_all()
-        self._on_ready()
+        self.refresh(layout=True)
+        self.call_after_refresh(self._on_ready)
 
     def on_unmount(self) -> None:
         self._ready_for_refresh = False

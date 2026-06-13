@@ -49,6 +49,19 @@ jobs:
             exit 1
           fi
 
+      - name: Install TUI dependencies
+        run: |
+          python3 -m pip install -r requirements-tui.txt
+
+      - name: Run TUI tests
+        run: |
+          python3 -m unittest discover -s tests -p "test_frontend_injection.py" -v
+          python3 -m unittest discover -s tests -p "test_tui*.py" -v
+
+      - name: Compile TUI modules
+        run: |
+          python3 -m compileall -q tui tdminer.py network/twitch.py core/utils.py
+
   windows:
     name: Windows
     runs-on: windows-latest
@@ -165,6 +178,125 @@ jobs:
           if-no-files-found: error
           name: Twitch.Drops.Miner.MacOS
           path: Twitch.Drops.Miner.MacOS.zip
+
+  windows-tui:
+    name: Windows TUI
+    runs-on: windows-latest
+    needs:
+      - validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      - name: Install TUI dependencies
+        run: |
+          python3 -m pip install -r requirements-tui.txt
+          python3 -m pip install pyinstaller
+
+      - name: Create tdminer executable
+        run: |
+          pyinstaller build_tui.spec --noconfirm
+
+      - name: Create TUI release archive
+        run: |
+          New-Item tdminer -ItemType Directory
+          Copy-Item dist\tdminer.exe tdminer\
+          Compress-Archive -Path tdminer -DestinationPath Twitch.Drops.Miner.TUI.Windows.zip
+
+      - name: Upload TUI build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: Twitch.Drops.Miner.TUI.Windows
+          path: Twitch.Drops.Miner.TUI.Windows.zip
+
+  macos-tui:
+    name: macOS TUI
+    runs-on: macos-latest
+    needs:
+      - validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      - name: Install TUI dependencies
+        run: |
+          python3 -m pip install -r requirements-tui.txt
+          python3 -m pip install pyinstaller
+
+      - name: Create tdminer executable
+        run: |
+          pyinstaller build_tui.spec --noconfirm
+
+      - name: Create TUI release archive
+        run: |
+          mkdir -p tdminer
+          cp dist/tdminer tdminer/
+          zip -r Twitch.Drops.Miner.TUI.MacOS.zip tdminer
+
+      - name: Upload TUI build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: Twitch.Drops.Miner.TUI.MacOS
+          path: Twitch.Drops.Miner.TUI.MacOS.zip
+
+  linux-tui:
+    name: Linux TUI (${{matrix.arch}})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-22.04
+          - arch: aarch64
+            runner: ubuntu-22.04-arm
+    runs-on: ${{matrix.runner}}
+    needs:
+      - validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      - name: Install TUI dependencies
+        run: |
+          python3 -m pip install -r requirements-tui.txt
+          python3 -m pip install pyinstaller
+
+      - name: Create tdminer executable
+        run: |
+          pyinstaller build_tui.spec --noconfirm
+
+      - name: Create TUI release archive
+        run: |
+          mkdir -p tdminer
+          cp dist/tdminer tdminer/
+          zip -r Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}.zip tdminer
+
+      - name: Upload TUI build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}
+          path: Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}.zip
 
   linux-pyinstaller:
     name: Linux (PyInstaller) (${{matrix.arch}})
@@ -314,9 +446,12 @@ jobs:
     if: github.event_name != 'pull_request'
     needs:
       - windows
+      - windows-tui
       - linux-pyinstaller
       - linux-appimage
+      - linux-tui
       - macos
+      - macos-tui
     runs-on: ubuntu-latest
     permissions:
       contents: write

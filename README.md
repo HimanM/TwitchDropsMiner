@@ -28,6 +28,40 @@ Every several seconds, the application pretends to watch a particular stream by 
 - If you wish to keep the miner occupied with mining anything it can, beyond what you've selected via the Priority List, you can use the Priority Mode setting to specify the mining order for the rest of the games.
 - Make sure to link your Twitch account to game accounts on the [campaigns page](https://www.twitch.tv/drops/campaigns), to enable more games to be mined.
 
+### Terminal UI (`tdminer`):
+
+This fork also ships a Textual-based terminal UI for users who want a keyboard-friendly app that can run over SSH or on a headless Linux box. It keeps the regular GUI build intact.
+
+Install the latest TUI release on Linux or macOS:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/HimanM/TwitchDropsMiner/main/scripts/install.sh | sh
+```
+
+Install the latest TUI release on Windows PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/HimanM/TwitchDropsMiner/main/scripts/install.ps1 | iex
+```
+
+Run it after installing:
+
+```sh
+tdminer
+```
+
+The TUI login uses Twitch device activation. When login is needed, `tdminer` shows the activation URL and user code in the terminal. You can open the URL from the TUI, copy it, or manually paste/type it on another machine; this works for headless Linux sessions where no browser is available.
+
+Useful TUI shortcuts:
+
+- `q` quits.
+- `r` reloads inventory/campaign data.
+- `s` switches to the selected channel in the Channels tab.
+- `b` opens the Twitch login URL when a device-code login is pending.
+- `c` copies the Twitch login URL when a device-code login is pending.
+
+The release workflow builds and publishes separate TUI assets for Windows, macOS, Linux x86_64, and Linux aarch64. The install scripts always fetch the latest matching `tdminer` asset from GitHub Releases.
+
 ### Pictures:
 
 ![Main](https://user-images.githubusercontent.com/4180725/164298155-c0880ad7-6423-4419-8d73-f3c053730a1b.png)

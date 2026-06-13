@@ -347,6 +347,7 @@ class TUIManager:
         self._app_ready = asyncio.Event()
         self._app: TwitchDropsTUI | None = None
         self._app_task: asyncio.Task[Any] | None = None
+        self._console_fallback = False
 
         self.status = TUIStatus(self)
         self.websockets = TUIWebsocketStatus(self)
@@ -382,6 +383,11 @@ class TUIManager:
         if self._app_task is not None and not self._app_task.done():
             return
         self._app_ready.clear()
+        if sys.platform == "win32":
+            self._app = None
+            self._start_console_fallback()
+            self._app_ready.set()
+            return
         self._app = TwitchDropsTUI(
             self.state,
             on_close=self.close,
@@ -393,14 +399,30 @@ class TUIManager:
             on_toggle_farm_unlinked=self._toggle_farm_unlinked,
             on_ready=self._mark_app_ready,
         )
-        inline = sys.platform == "win32"
-        self._app_task = asyncio.create_task(
-            self._app.run_async(inline=inline, inline_no_clear=inline)
-        )
+        self._app_task = asyncio.create_task(self._app.run_async())
 
     def _mark_app_ready(self) -> None:
         logger.info("Terminal UI ready.")
         self._app_ready.set()
+
+    def _write_console(self, line: str = "") -> None:
+        try:
+            sys.__stdout__.write(f"{line}\n")
+            sys.__stdout__.flush()
+        except Exception:
+            pass
+
+    def _start_console_fallback(self) -> None:
+        if self._console_fallback:
+            return
+        self._console_fallback = True
+        self._write_console()
+        self._write_console("Twitch Drops Miner")
+        self._write_console("Textual UI could not start in this Windows console.")
+        self._write_console("Running in console fallback mode. Press Ctrl+C to stop.")
+        self._write_console()
+        for line in self.state.logs[-20:]:
+            self._write_console(line)
 
     async def wait_until_ready(self) -> None:
         if self._app is None or self._app_ready.is_set():
@@ -409,6 +431,9 @@ class TUIManager:
             await asyncio.wait_for(self._app_ready.wait(), timeout=self.READY_TIMEOUT)
         except asyncio.TimeoutError:
             logger.warning("Terminal UI did not report ready before startup timeout.")
+            if self._app is not None and self._app.is_running:
+                self._app.exit()
+            self._start_console_fallback()
             self._app_ready.set()
 
     def stop(self) -> None:
@@ -468,6 +493,8 @@ class TUIManager:
             message = message.replace("\n", f"\n{stamp}: ")
         line = f"{stamp}: {message}"
         self.state.add_log(line)
+        if self._console_fallback:
+            self._write_console(line)
         if self._app is not None:
             self._app.append_log_later(line)
 

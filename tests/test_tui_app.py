@@ -92,39 +92,41 @@ class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
 
 
 class TUIManagerTests(unittest.IsolatedAsyncioTestCase):
-    async def test_start_uses_inline_mode_on_windows(self):
+    def test_start_uses_console_fallback_on_windows(self):
         twitch = SimpleNamespace(
             settings=SimpleNamespace(priority=[], exclude=set(), farm_unlinked=False)
         )
         manager = TUIManager(twitch)
-        run_kwargs = []
-
-        async def fake_run_async(self, **kwargs):
-            run_kwargs.append(kwargs)
 
         with (
             patch("tui.manager.sys.platform", "win32"),
-            patch.object(TwitchDropsTUI, "run_async", fake_run_async),
+            patch.object(manager, "_write_console") as write_console,
         ):
             manager.start()
-            await manager._app_task
 
-        self.assertEqual(
-            run_kwargs,
-            [{"inline": True, "inline_no_clear": True}],
-        )
+        self.assertTrue(manager._console_fallback)
+        self.assertTrue(manager._app_ready.is_set())
+        self.assertIsNone(manager._app)
+        write_console.assert_called()
 
     async def test_wait_until_ready_has_timeout_fallback(self):
         twitch = SimpleNamespace(
             settings=SimpleNamespace(priority=[], exclude=set(), farm_unlinked=False)
         )
         manager = TUIManager(twitch)
-        manager._app = object()
+        exits = []
+        manager._app = SimpleNamespace(is_running=True, exit=lambda: exits.append("exit"))
 
-        with patch.object(manager, "READY_TIMEOUT", 0.01):
+        with (
+            patch.object(manager, "READY_TIMEOUT", 0.01),
+            patch.object(manager, "_write_console") as write_console,
+        ):
             await manager.wait_until_ready()
 
         self.assertTrue(manager._app_ready.is_set())
+        self.assertTrue(manager._console_fallback)
+        self.assertEqual(exits, ["exit"])
+        write_console.assert_called()
 
 
 if __name__ == "__main__":

@@ -82,6 +82,15 @@ class TwitchDropsTUI(App[None]):
         margin-bottom: 1;
     }
 
+    #filter-label {
+        width: auto;
+        margin-right: 1;
+    }
+
+    .filter-strip Checkbox {
+        width: auto;
+    }
+
     .action-row Button,
     .filter-strip Checkbox {
         margin-right: 1;
@@ -201,7 +210,7 @@ class TwitchDropsTUI(App[None]):
             with TabPane("Campaigns", id="campaigns-tab"):
                 with Vertical(id="campaigns"):
                     with Horizontal(classes="filter-strip"):
-                        yield Static("show:")
+                        yield Static("show:", id="filter-label")
                         yield Checkbox("not linked", id="filter-not-linked", compact=True)
                         yield Checkbox("upcoming", id="filter-upcoming", compact=True)
                         yield Checkbox("expired", id="filter-expired", compact=True)

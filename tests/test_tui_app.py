@@ -155,6 +155,19 @@ class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
 
             self.assertEqual(table.row_count, 2)
 
+    async def test_campaign_filter_controls_are_visible(self):
+        app = self.make_app()
+
+        async with app.run_test(size=(100, 30)) as pilot:
+            await pilot.pause()
+
+            self.assertTrue(app.query_one("#filter-label").display)
+            self.assertTrue(app.query_one("#filter-not-linked").display)
+            self.assertTrue(app.query_one("#filter-upcoming").display)
+            self.assertTrue(app.query_one("#filter-expired").display)
+            self.assertTrue(app.query_one("#filter-excluded").display)
+            self.assertTrue(app.query_one("#filter-finished").display)
+
     async def test_settings_use_compact_selects_tables_and_checkbox(self):
         state = TUIState()
         state.available_games = ["Game A", "Game B"]

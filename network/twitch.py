@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import asyncio
 import logging
+import inspect
 from time import time
 from copy import deepcopy
 from itertools import chain
@@ -16,7 +17,6 @@ import aiohttp
 from yarl import URL
 
 from core.translate import _
-from gui.components import GUIManager
 from models.channel import Channel
 from network.websocket import WebsocketPool
 from models.inventory import DropsCampaign
@@ -56,7 +56,7 @@ from core.constants import (
 
 if TYPE_CHECKING:
     from core.utils import Game
-    from gui.components import LoginForm
+    from gui.components import GUIManager, LoginForm
     from models.channel import Stream
     from core.settings import Settings
     from models.inventory import TimedDrop
@@ -421,7 +421,11 @@ class _AuthState:
 
 
 class Twitch:
-    def __init__(self, settings: Settings):
+    def __init__(
+        self,
+        settings: Settings,
+        gui_factory: abc.Callable[[Twitch], Any] | None = None,
+    ):
         self.settings: Settings = settings
         # State management
         self._state: State = State.IDLE
@@ -438,8 +442,13 @@ class Twitch:
         self._client_type: ClientInfo = ClientType.ANDROID_APP
         self._session: aiohttp.ClientSession | None = None
         self._auth_state: _AuthState = _AuthState(self)
-        # GUI
-        self.gui = GUIManager(self)
+        # Frontend manager. The default remains the Tk GUI, but CLI/TUI entry points can inject
+        # a compatible manager without importing Tk-only dependencies.
+        if gui_factory is None:
+            from gui.components import GUIManager
+
+            gui_factory = GUIManager
+        self.gui: GUIManager | Any = gui_factory(self)
         # Storing and watching channels
         self.channels: OrderedDict[int, Channel] = OrderedDict()
         self.watching_channel: AwaitableValue[Channel] = AwaitableValue()
@@ -604,7 +613,7 @@ class Twitch:
         • Selecting a stream to watch, and watching it
         • Changing the stream that's being watched if necessary
         """
-        self.gui.start()
+        await self._start_frontend()
         auth_state = await self.get_auth()
         await self.websocket.start()
         # NOTE: watch task is explicitly restarted on each new run
@@ -976,6 +985,16 @@ class Twitch:
         # this triggers a restart of this task every (up to) 60 minutes
         logger.log(CALL, "Maintenance task requests a reload")
         self.change_state(State.INVENTORY_FETCH)
+
+    async def _start_frontend(self) -> None:
+        start_result = self.gui.start()
+        if inspect.isawaitable(start_result):
+            await start_result
+        wait_until_ready = getattr(self.gui, "wait_until_ready", None)
+        if wait_until_ready is not None:
+            ready_result = wait_until_ready()
+            if inspect.isawaitable(ready_result):
+                await ready_result
 
     def can_watch(self, channel: Channel) -> bool:
         """

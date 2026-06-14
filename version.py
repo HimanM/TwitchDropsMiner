@@ -1,1 +1,1 @@
-__version__ = "17.dev"
+__version__ = "18.Opinionated By @HimanM"

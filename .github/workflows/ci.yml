@@ -49,6 +49,19 @@ jobs:
             exit 1
           fi
 
+      - name: Install TUI dependencies
+        run: |
+          python3 -m pip install -r requirements-tui.txt
+
+      - name: Run TUI tests
+        run: |
+          python3 -m unittest discover -s tests -p "test_frontend_injection.py" -v
+          python3 -m unittest discover -s tests -p "test_tui*.py" -v
+
+      - name: Compile TUI modules
+        run: |
+          python3 -m compileall -q tui tdminer.py network/twitch.py core/utils.py
+
   windows:
     name: Windows
     runs-on: windows-latest
@@ -165,6 +178,88 @@ jobs:
           if-no-files-found: error
           name: Twitch.Drops.Miner.MacOS
           path: Twitch.Drops.Miner.MacOS.zip
+
+  macos-tui:
+    name: macOS TUI
+    runs-on: macos-latest
+    needs:
+      - validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      - name: Install TUI dependencies
+        run: |
+          python3 -m pip install -r requirements-tui.txt
+          python3 -m pip install pyinstaller
+
+      - name: Create tdminer executable
+        run: |
+          pyinstaller build_tui.spec --noconfirm
+
+      - name: Create TUI release archive
+        run: |
+          mkdir -p tdminer
+          cp dist/tdminer tdminer/
+          zip -r Twitch.Drops.Miner.TUI.MacOS.zip tdminer
+
+      - name: Upload TUI build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: Twitch.Drops.Miner.TUI.MacOS
+          path: Twitch.Drops.Miner.TUI.MacOS.zip
+
+  linux-tui:
+    name: Linux TUI (${{matrix.arch}})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-22.04
+          - arch: aarch64
+            runner: ubuntu-22.04-arm
+    runs-on: ${{matrix.runner}}
+    needs:
+      - validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      - name: Install TUI dependencies
+        run: |
+          python3 -m pip install -r requirements-tui.txt
+          python3 -m pip install pyinstaller
+
+      - name: Create tdminer executable
+        run: |
+          pyinstaller build_tui.spec --noconfirm
+
+      - name: Create TUI release archive
+        run: |
+          mkdir -p tdminer
+          cp dist/tdminer tdminer/
+          zip -r Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}.zip tdminer
+
+      - name: Upload TUI build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}
+          path: Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}.zip
 
   linux-pyinstaller:
     name: Linux (PyInstaller) (${{matrix.arch}})
@@ -316,7 +411,9 @@ jobs:
       - windows
       - linux-pyinstaller
       - linux-appimage
+      - linux-tui
       - macos
+      - macos-tui
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -348,6 +445,22 @@ jobs:
 
             - Build date: `${{steps.vars.outputs.date_now}}`
             - Reference commit: ${{github.sha}}
+
+            **Terminal UI install**
+
+            Linux/macOS:
+
+            ```sh
+            curl -fsSL https://raw.githubusercontent.com/HimanM/TwitchDropsMiner/main/scripts/install.sh | sh
+            ```
+
+            Run `tdminer tui` for the richer Linux/macOS Textual interface, or `tdminer cli` for the portable prompt-based interface used by Windows/source installs and Termux-style terminals.
+
+            The portable CLI includes a boxed slash-command input. Type `/` for commands, `/priority add ` or `/exclude add ` for game completion, and `/switch ` for channel completion.
+
+            The `tdminer` release binaries are self-contained and do not require users to install Python first. The installer needs `curl` and `unzip`, installs to `~/.local/bin` by default, and can be redirected with `TDMINER_INSTALL_DIR=/path/to/bin`.
+
+            Native Termux on Android is not supported by these glibc Linux release assets; use source installs or a proot Linux environment there.
           name: "Release v${{steps.vars.outputs.app_version}}"
           prerelease: false
           removeArtifacts: true

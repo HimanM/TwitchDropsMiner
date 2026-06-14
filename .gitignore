@@ -27,3 +27,4 @@ settings.json
 .DS_Store
 *.app
 /.venv-linux-build
+/.venv-tui

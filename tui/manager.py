@@ -490,8 +490,9 @@ class TUIManager:
             message = message.replace("\n", f"\n{stamp}: ")
         line = f"{stamp}: {message}"
         self.state.add_log(line)
-        if self._app is not None:
-            self._app.append_log_later(line)
+        append_log_later = getattr(self._app, "append_log_later", None)
+        if append_log_later is not None:
+            append_log_later(line)
 
     def selected_channel_id(self) -> str | None:
         if self._app is None or not self._app.is_running or not self._app.is_mounted:

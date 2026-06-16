@@ -1233,11 +1233,25 @@ class Twitch:
                 # badge confirmation?
             ):
                 self.change_state(State.INVENTORY_FETCH)
-                await self.gql_request(
-                    GQL_QUERIES["NotificationsDelete"].with_variables(
-                        {"input": {"id": data["id"]}}
+                try:
+                    await self.gql_request(
+                        GQL_QUERIES["NotificationsDelete"].with_variables(
+                            {"input": {"id": data["id"]}}
+                        )
                     )
-                )
+                except GQLException as exc:
+                    errors = exc.args[0] if exc.args else []
+                    if not (
+                        isinstance(errors, list)
+                        and any(
+                            isinstance(error, dict)
+                            and error.get("message") == "notification not found"
+                            and error.get("path") == ["deleteNotification"]
+                            for error in errors
+                        )
+                    ):
+                        raise
+                    logger.log(CALL, f"Notification already deleted: {data['id']}")
 
     async def get_auth(self) -> _AuthState:
         await self._auth_state.validate()

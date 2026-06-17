@@ -1,3 +1,4 @@
+import logging
 import unittest
 from types import SimpleNamespace
 
@@ -83,7 +84,15 @@ class TUIManagerRegressionTests(unittest.TestCase):
 
 
 class IdleDiagnosticsTests(unittest.TestCase):
+    def setUp(self):
+        self._logger = logging.getLogger("TwitchDrops")
+        self._old_level = self._logger.level
+
+    def tearDown(self):
+        self._logger.setLevel(self._old_level)
+
     def test_idle_channel_summary_counts_watchability(self):
+        self._logger.setLevel(logging.INFO)
         twitch = Twitch.__new__(Twitch)
         twitch.wanted_games = [SimpleNamespace(name="Game")]
         twitch.channels = {
@@ -100,7 +109,19 @@ class IdleDiagnosticsTests(unittest.TestCase):
         self.assertIn("drops_enabled=1", text)
         self.assertIn("watchable=1", text)
 
+    def test_idle_channel_summary_is_suppressed_without_verbose_logging(self):
+        self._logger.setLevel(logging.WARNING)
+        twitch = Twitch.__new__(Twitch)
+        twitch.wanted_games = [SimpleNamespace(name="Game")]
+        twitch.channels = {
+            1: SimpleNamespace(name="one", online=True, drops_enabled=True),
+        }
+        twitch.can_watch = lambda channel: True
+
+        self.assertIsNone(Twitch._idle_channel_summary(twitch))
+
     def test_idle_campaign_summary_includes_settings(self):
+        self._logger.setLevel(logging.INFO)
         twitch = Twitch.__new__(Twitch)
         twitch.wanted_games = []
         twitch.settings = SimpleNamespace(priority=["Game"], exclude={"Other"})
@@ -113,6 +134,17 @@ class IdleDiagnosticsTests(unittest.TestCase):
         self.assertIn("earnable=['Game']", text)
         self.assertIn("priority=['Game']", text)
         self.assertIn("exclude=['Other']", text)
+
+    def test_idle_campaign_summary_is_suppressed_without_verbose_logging(self):
+        self._logger.setLevel(logging.ERROR)
+        twitch = Twitch.__new__(Twitch)
+        twitch.wanted_games = []
+        twitch.settings = SimpleNamespace(priority=["Game"], exclude={"Other"})
+        twitch.inventory = [
+            SimpleNamespace(game=SimpleNamespace(name="Game"), can_earn_within=lambda _until: True)
+        ]
+
+        self.assertIsNone(Twitch._idle_campaign_summary(twitch))
 
 
 if __name__ == "__main__":

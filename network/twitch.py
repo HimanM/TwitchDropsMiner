@@ -729,7 +729,9 @@ class Twitch:
                 else:
                     # with no games available, we switch to IDLE after cleanup
                     self.print(_("status", "no_campaign"))
-                    self.print(self._idle_campaign_summary())
+                    campaign_summary = self._idle_campaign_summary()
+                    if campaign_summary is not None:
+                        self.print(campaign_summary)
                     self.change_state(State.IDLE)
             elif self._state is State.CHANNELS_FETCH:
                 self.gui.status.update(_("gui", "status", "gathering"))
@@ -874,7 +876,9 @@ class Twitch:
                 else:
                     # not watching anything and there isn't anything to watch either
                     self.print(_("status", "no_channel"))
-                    self.print(self._idle_channel_summary())
+                    channel_summary = self._idle_channel_summary()
+                    if channel_summary is not None:
+                        self.print(channel_summary)
                     self.change_state(State.IDLE)
                 del new_watching, selected_channel, watching_channel
             elif self._state is State.EXIT:
@@ -1020,7 +1024,9 @@ class Twitch:
                 return True
         return False
 
-    def _idle_campaign_summary(self) -> str:
+    def _idle_campaign_summary(self) -> str | None:
+        if not logger.isEnabledFor(logging.INFO):
+            return None
         next_hour = datetime.now(timezone.utc) + timedelta(hours=1)
         earnable = [
             campaign.game.name
@@ -1038,7 +1044,9 @@ class Twitch:
             f"exclude={exclude[:6] or '-'}"
         )
 
-    def _idle_channel_summary(self) -> str:
+    def _idle_channel_summary(self) -> str | None:
+        if not logger.isEnabledFor(logging.INFO):
+            return None
         channels = list(self.channels.values())
         online = [channel for channel in channels if channel.online]
         drops_enabled = [channel for channel in online if channel.drops_enabled]

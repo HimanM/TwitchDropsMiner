@@ -644,6 +644,23 @@ class PortableCLIManager(TUIManager):
         joined = "\n".join(lines)
         return joined[: height * width]
 
+    # ── Test compatibility wrappers ──────────────────────────────────
+
+    @staticmethod
+    def _strip_ansi(text: str) -> str:
+        import re
+        return re.sub(r"\x1b\[[0-9;]*m", "", text)
+
+    def _screen_text(self) -> str:
+        width, height = self._terminal_size()
+        return self._strip_ansi(self._render_screen(width, height))
+
+    def _channels_lines(self, width: int) -> list[str]:
+        return self._strip_ansi(self._rich_channels(width)).splitlines()
+
+    def _drops_lines(self, width: int) -> list[str]:
+        return self._strip_ansi(self._rich_drops(width)).splitlines()
+
     # ── Splash screen ────────────────────────────────────────────────
 
     def _render_splash(self, width: int, height: int, elapsed: float) -> str:

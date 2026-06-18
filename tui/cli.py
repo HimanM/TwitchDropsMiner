@@ -747,7 +747,7 @@ class PortableCLIManager(TUIManager):
         watching = next((ch.name for ch in self.state.channels.values() if ch.watching), "-")
         websockets = sum(1 for ws in self.state.websockets.values() if "connected" in ws.status.lower())
         spinner = self._spinner_char()
-        narrow = width < 52
+        narrow = width < 60
 
         # Status panel
         status_table = Table(show_header=False, box=None, padding=(0, 1))
@@ -862,7 +862,7 @@ class PortableCLIManager(TUIManager):
         total = len(campaigns)
         page_label = self._page_label(self._campaign_offset, self.CAMPAIGN_PAGE_SIZE, total)
 
-        narrow = width < 52
+        narrow = width < 60
         medium = width < 72
 
         table = Table(

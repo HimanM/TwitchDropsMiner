@@ -173,6 +173,9 @@ class PortableCLIManager(TUIManager):
         "/farm-unlinked off",
         "/detach",
         "/help",
+        "/help navigation",
+        "/help control",
+        "/help system",
         "/quit",
     )
 
@@ -401,6 +404,8 @@ class PortableCLIManager(TUIManager):
             return ["on", "off"]
         if command == "/mode":
             return ["priority-only", "ending-soonest", "low-availability"]
+        if command == "/help":
+            return ["navigation", "control", "system"]
         return []
 
     def _resolve_channel_id(self, value: str) -> str | None:

@@ -171,6 +171,9 @@ class PortableCLIManager(TUIManager):
         "/farm-unlinked",
         "/farm-unlinked on",
         "/farm-unlinked off",
+        "/badges",
+        "/badges on",
+        "/badges off",
         "/detach",
         "/help",
         "/help navigation",
@@ -380,6 +383,8 @@ class PortableCLIManager(TUIManager):
             self._handle_filter(rest)
         elif command == "farm-unlinked":
             self._set_farm_unlinked(rest.lower() in {"1", "on", "true", "yes"})
+        elif command in {"badges", "badges-emotes"}:
+            self._set_badges_emotes(rest.lower() in {"1", "on", "true", "yes"})
         elif command == "detach":
             self._detach_tmux()
         elif command == "help":
@@ -400,7 +405,7 @@ class PortableCLIManager(TUIManager):
             return list(self.state.exclude)
         if command == "/switch":
             return [channel.name for channel in self.state.channels.values()]
-        if command in {"/farm-unlinked", "/filter not-linked", "/filter upcoming", "/filter expired", "/filter excluded", "/filter finished"}:
+        if command in {"/farm-unlinked", "/badges", "/filter not-linked", "/filter upcoming", "/filter expired", "/filter excluded", "/filter finished"}:
             return ["on", "off"]
         if command == "/mode":
             return ["priority-only", "ending-soonest", "low-availability"]
@@ -934,6 +939,7 @@ class PortableCLIManager(TUIManager):
         table.add_column()
         table.add_row("Mode", Text(self.state.priority_mode, style=_C_AMBER))
         table.add_row("Farm unlinked", Text("on" if self.state.farm_unlinked else "off", style=_C_GREEN if self.state.farm_unlinked else _C_DIM))
+        table.add_row("Badges/emotes", Text("on" if self.state.enable_badges_emotes else "off", style=_C_GREEN if self.state.enable_badges_emotes else _C_DIM))
         table.add_row("Available", Text(f"{len(self.state.available_games)} games", style=_C_TEXT))
 
         console.print(table)
@@ -1002,7 +1008,7 @@ class PortableCLIManager(TUIManager):
         console.print(Text("  /priority add <game>  /priority remove <game>", style=_C_DIM))
         console.print(Text("  /priority bump <game>  /priority demote <game>", style=_C_DIM))
         console.print(Text("  /exclude add <game>  /mode <name>", style=_C_DIM))
-        console.print(Text("  /farm-unlinked on|off  (only works in priority-only mode)", style=_C_DIM))
+        console.print(Text("  /farm-unlinked on|off  /badges on|off", style=_C_DIM))
 
         return console.file.getvalue()  # type: ignore[union-attr]
 

@@ -14,6 +14,7 @@ class SettingsStub:
         self.priority = []
         self.exclude = set()
         self.farm_unlinked = False
+        self.enable_badges_emotes = False
         self.priority_mode = PriorityMode.PRIORITY_ONLY
         self.saved = False
 
@@ -43,6 +44,7 @@ class PortableCLITests(unittest.TestCase):
         self.assertIn("/quit", PortableCLIManager.COMMANDS)
         self.assertIn("/priority bump", PortableCLIManager.COMMANDS)
         self.assertIn("/priority demote", PortableCLIManager.COMMANDS)
+        self.assertIn("/badges on", PortableCLIManager.COMMANDS)
 
     def test_command_completer_triggers_from_slash_prefix(self):
         completer = CommandCompleter(PortableCLIManager.COMMANDS)
@@ -135,6 +137,15 @@ class PortableCLITests(unittest.TestCase):
         manager._handle_command("/priority demote Game B")
 
         self.assertEqual(["Game A", "Game C", "Game B"], manager.state.priority)
+        self.assertTrue(manager._twitch.settings.saved)
+
+    def test_badges_command_updates_setting(self):
+        manager = self.make_manager()
+
+        manager._handle_command("/badges on")
+
+        self.assertTrue(manager.state.enable_badges_emotes)
+        self.assertTrue(manager._twitch.settings.enable_badges_emotes)
         self.assertTrue(manager._twitch.settings.saved)
 
     def test_print_logs_without_textual_app(self):

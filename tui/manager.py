@@ -386,12 +386,14 @@ class TUIManager:
             self.PRIORITY_MODE_LABELS[PriorityMode.PRIORITY_ONLY],
         )
         self.state.farm_unlinked = bool(getattr(settings, "farm_unlinked", False))
+        self.state.enable_badges_emotes = bool(getattr(settings, "enable_badges_emotes", False))
         self.state.available_games = sorted(game.name for game in self._games)
         self.state.settings_text = (
             f"Mode: {self.state.priority_mode} | "
             f"Priority: {len(self.state.priority)} | "
             f"Exclude: {len(self.state.exclude)} | "
             f"Farm unlinked: {self.state.farm_unlinked} | "
+            f"Badges/emotes: {self.state.enable_badges_emotes} | "
             f"Games: {len(self.state.available_games)}"
         )
         self.refresh_settings()
@@ -414,6 +416,7 @@ class TUIManager:
             on_move_priority_game=self._move_priority_game,
             on_set_priority_mode=self._set_priority_mode,
             on_set_farm_unlinked=self._set_farm_unlinked,
+            on_set_badges_emotes=self._set_badges_emotes,
             on_ready=self._mark_app_ready,
         )
         self._app_task = asyncio.create_task(self._app.run_async())
@@ -592,3 +595,7 @@ class TUIManager:
             enabled = False
         self._twitch.settings.farm_unlinked = enabled
         self._save_settings_update(f"Farm unlinked drops set to {enabled}.")
+
+    def _set_badges_emotes(self, enabled: bool) -> None:
+        self._twitch.settings.enable_badges_emotes = enabled
+        self._save_settings_update(f"Badge/emote drops set to {enabled}.")

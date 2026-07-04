@@ -163,6 +163,7 @@ class TwitchDropsTUI(App[None]):
         on_move_priority_game: abc.Callable[[str, int], None],
         on_set_priority_mode: abc.Callable[[str], None],
         on_set_farm_unlinked: abc.Callable[[bool], None],
+        on_set_badges_emotes: abc.Callable[[bool], None],
         on_ready: abc.Callable[[], None] | None = None,
     ) -> None:
         super().__init__()
@@ -179,6 +180,7 @@ class TwitchDropsTUI(App[None]):
         self._on_move_priority_game = on_move_priority_game
         self._on_set_priority_mode = on_set_priority_mode
         self._on_set_farm_unlinked = on_set_farm_unlinked
+        self._on_set_badges_emotes = on_set_badges_emotes
         self._on_ready = on_ready or (lambda: None)
         self._ready_for_refresh = False
         self._syncing_settings = False
@@ -229,6 +231,11 @@ class TwitchDropsTUI(App[None]):
                             yield Checkbox(
                                 "farm unlinked drops",
                                 id="farm-unlinked",
+                                compact=True,
+                            )
+                            yield Checkbox(
+                                "badges and emotes",
+                                id="badges-emotes",
                                 compact=True,
                             )
                             yield Static(
@@ -455,6 +462,10 @@ class TwitchDropsTUI(App[None]):
             farm_unlinked.value = self.state.farm_unlinked
             farm_unlinked.disabled = self.state.priority_mode != "Priority list only"
 
+        badges_emotes = self._widget("#badges-emotes", Checkbox)
+        if badges_emotes is not None:
+            badges_emotes.value = self.state.enable_badges_emotes
+
         game_select = self._widget("#game-select", Select)
         if game_select is not None:
             options = [(game, game) for game in self.state.available_games]
@@ -573,6 +584,10 @@ class TwitchDropsTUI(App[None]):
         if checkbox_id == "farm-unlinked":
             if event.value != self.state.farm_unlinked:
                 self._on_set_farm_unlinked(event.value)
+            return
+        if checkbox_id == "badges-emotes":
+            if event.value != self.state.enable_badges_emotes:
+                self._on_set_badges_emotes(event.value)
             return
         filters = self.state.campaign_filters
         if checkbox_id == "filter-not-linked":

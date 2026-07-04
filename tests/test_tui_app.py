@@ -25,6 +25,7 @@ class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
             on_move_priority_game=callbacks.get("on_move_priority_game", lambda game, offset: None),
             on_set_priority_mode=callbacks.get("on_set_priority_mode", lambda mode: None),
             on_set_farm_unlinked=callbacks.get("on_set_farm_unlinked", lambda enabled: None),
+            on_set_badges_emotes=callbacks.get("on_set_badges_emotes", lambda enabled: None),
             on_ready=on_ready,
         )
 
@@ -228,8 +229,19 @@ class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(app.query_one("#game-select").is_mounted)
             self.assertTrue(app.query_one("#priority-mode-select").is_mounted)
             self.assertTrue(app.query_one("#farm-unlinked").is_mounted)
+            self.assertTrue(app.query_one("#badges-emotes").is_mounted)
             self.assertEqual(app.query_one("#priority-table").row_count, 1)
             self.assertEqual(app.query_one("#exclude-table").row_count, 1)
+
+    async def test_settings_refresh_syncs_badges_emotes_checkbox(self):
+        state = TUIState()
+        state.enable_badges_emotes = True
+        app = self.make_app(state)
+
+        async with app.run_test(size=(100, 30)) as pilot:
+            await pilot.pause()
+
+            self.assertTrue(app.query_one("#badges-emotes").value)
 
     async def test_settings_refresh_does_not_emit_priority_mode_change(self):
         state = TUIState()
@@ -250,6 +262,7 @@ class TUIManagerTests(unittest.IsolatedAsyncioTestCase):
             priority=["Game"],
             exclude=set(),
             farm_unlinked=False,
+            enable_badges_emotes=False,
             priority_mode=PriorityMode.PRIORITY_ONLY,
         )
         manager = TUIManager(SimpleNamespace(settings=settings))

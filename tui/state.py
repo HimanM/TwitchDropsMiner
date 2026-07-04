@@ -114,6 +114,7 @@ class TUIState:
     available_games: list[str] = field(default_factory=list)
     priority_mode: str = "Priority list only"
     farm_unlinked: bool = False
+    enable_badges_emotes: bool = False
     campaign_filters: CampaignFilters = field(default_factory=CampaignFilters)
     login: LoginSnapshot = field(default_factory=LoginSnapshot)
     current_drop: DropSnapshot = field(default_factory=DropSnapshot)

@@ -1,5 +1,6 @@
 import unittest
 import os
+import io
 from unittest.mock import patch
 
 from tui import main as tui_main
@@ -31,6 +32,14 @@ class TUIMainTests(unittest.TestCase):
     def test_frontend_factory_honors_explicit_frontend(self):
         self.assertIs(tui_main.frontend_factory("cli"), PortableCLIManager)
         self.assertIs(tui_main.frontend_factory("tui"), TUIManager)
+
+    def test_main_reports_busy_lock(self):
+        with patch("tui.main.lock_file", return_value=(False, None)), patch(
+            "sys.stderr", new_callable=io.StringIO
+        ) as stderr:
+            self.assertEqual(tui_main.main(["cli"]), 3)
+
+        self.assertIn("lock is busy", stderr.getvalue())
 
 
 if __name__ == "__main__":

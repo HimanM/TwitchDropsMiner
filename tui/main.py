@@ -191,6 +191,7 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings(args)
     success, file = lock_file(LOCK_PATH)
     if not success:
+        print(f"Another tdminer instance is already running or the lock is busy: {LOCK_PATH}", file=sys.stderr)
         return 3
     try:
         return asyncio.run(run_client(settings, frontend=args.frontend))

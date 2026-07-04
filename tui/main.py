@@ -119,7 +119,13 @@ def frontend_factory(name: str):
         return PortableCLIManager
     if name == "tui":
         return TUIManager
-    if sys.platform == "win32" or "WSL_INTEROP" in os.environ or "WSL_DISTRO_NAME" in os.environ:
+    if (
+        sys.platform == "win32"
+        or "WSL_INTEROP" in os.environ
+        or "WSL_DISTRO_NAME" in os.environ
+        or "TERMUX_VERSION" in os.environ
+        or "ANDROID_ROOT" in os.environ
+    ):
         return PortableCLIManager
     return TUIManager
 

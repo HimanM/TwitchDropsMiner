@@ -22,6 +22,12 @@ class TUIMainTests(unittest.TestCase):
         ):
             self.assertIs(tui_main.frontend_factory("auto"), PortableCLIManager)
 
+    def test_frontend_factory_uses_portable_cli_on_termux_auto(self):
+        with patch("tui.main.sys.platform", "linux"), patch.dict(
+            os.environ, {"TERMUX_VERSION": "1"}, clear=False
+        ):
+            self.assertIs(tui_main.frontend_factory("auto"), PortableCLIManager)
+
     def test_frontend_factory_honors_explicit_frontend(self):
         self.assertIs(tui_main.frontend_factory("cli"), PortableCLIManager)
         self.assertIs(tui_main.frontend_factory("tui"), TUIManager)

@@ -29,3 +29,8 @@ settings.json
 /.venv-linux-build
 /.venv-tui
 /graphify-out
+
+# Android local SDK/build state
+/android/.gradle
+/android/local.properties
+/android/app/build

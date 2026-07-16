@@ -7,7 +7,7 @@ __pycache__
 /*.exe
 /*.zip
 /*.tmp
-/Twitch Drops Miner
+/DropForge
 # Dev files
 *.new
 /env
@@ -29,3 +29,5 @@ settings.json
 /.venv-linux-build
 /.venv-tui
 /graphify-out
+/web/frontend/node_modules/
+/web/frontend/*.tsbuildinfo

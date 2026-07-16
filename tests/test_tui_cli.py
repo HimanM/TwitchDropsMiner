@@ -36,7 +36,7 @@ class PortableCLITests(unittest.TestCase):
 
         text = manager._screen_text()
 
-        self.assertIn("TDMinER by HimanM", text)
+        self.assertIn("DropForge by HimanM", text)
 
     def test_command_completer_includes_common_commands(self):
         self.assertIn("/channels next", PortableCLIManager.COMMANDS)

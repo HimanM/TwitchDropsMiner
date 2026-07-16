@@ -95,7 +95,7 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.overrideredirect(True)
     root.withdraw()
-    set_root_icon(root, resource_path("icons/pickaxe.ico"))
+    set_root_icon(root, resource_path("icons/dropforge.ico"))
     root.update()
     parser = Parser(
         SELF_PATH.name,

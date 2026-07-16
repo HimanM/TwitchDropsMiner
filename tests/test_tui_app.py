@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from types import SimpleNamespace
 from unittest.mock import PropertyMock, patch
 
-from core.constants import PriorityMode
+from core.constants import PriorityMode, State
 from tui.app import TwitchDropsTUI
 from tui.manager import TUIManager
 from tui.state import CampaignSnapshot, DropSnapshot, TUIState
@@ -257,6 +257,18 @@ class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
 
 
 class TUIManagerTests(unittest.IsolatedAsyncioTestCase):
+    def test_invalidate_auth_resets_auth_state_and_restarts(self):
+        events = []
+        twitch = SimpleNamespace(
+            settings=SimpleNamespace(priority=[], exclude=set()),
+            _auth_state=SimpleNamespace(invalidate=lambda: events.append("invalidate")),
+            change_state=events.append,
+        )
+
+        TUIManager(twitch)._invalidate_auth()
+
+        self.assertEqual(events, ["invalidate", State.RESTART])
+
     def test_inventory_snapshot_reads_settings_from_manager(self):
         settings = SimpleNamespace(
             priority=["Game"],

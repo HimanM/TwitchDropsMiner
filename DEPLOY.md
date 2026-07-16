@@ -1,6 +1,6 @@
 # Deployment Guide
 
-Complete guide to running and building Twitch Drops Miner across every platform and frontend.
+Complete guide to running and building DropForge across every platform and frontend.
 
 ## Table of Contents
 
@@ -292,7 +292,7 @@ pyinstaller build.spec
 pack.bat
 ```
 
-Output: `dist/Twitch Drops Miner (by HimanM).exe`
+Output: `dist/DropForge.exe`
 
 The `build.bat` script:
 1. Creates/uses the `env/` virtual environment
@@ -329,7 +329,7 @@ cd -
 LD_LIBRARY_PATH=/tmp/libXft/lib xvfb-run --auto-servernum pyinstaller build.spec
 ```
 
-Output: `dist/Twitch Drops Miner (by HimanM)` (one-dir) or single executable
+Output: `dist/DropForge` (one-dir) or single executable
 
 #### Linux GUI Build (AppImage)
 
@@ -362,7 +362,7 @@ pip install -r requirements.txt pyinstaller
 pyinstaller build.spec --noconfirm
 ```
 
-Output: `dist/Twitch Drops Miner (by HimanM).app`
+Output: `dist/DropForge.app`
 
 ### Building the TUI / CLI Binary
 

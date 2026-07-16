@@ -31,17 +31,17 @@ upx: bool = False  # Use UPX compression (reduces file size, may increase AV det
 console: bool = False  # True if you'd want to add a console window (useful for debugging)
 one_dir: bool = False  # True for one-dir, False for one-file
 optimize: int | None = None  # -1/None/0=none, 1=remove asserts, 2=also remove docstrings
-app_name: str = "Twitch Drops Miner (by HimanM)"
+app_name: str = "DropForge"
 
 
 # (source_path, dest_path, required)
 to_add: list[tuple[Path, str, bool]] = [
     # icon files
-    (Path("icons/pickaxe.ico"), "./icons", True),
-    (Path("icons/active.ico"), "./icons", True),
-    (Path("icons/idle.ico"), "./icons", True),
-    (Path("icons/error.ico"), "./icons", True),
-    (Path("icons/maint.ico"), "./icons", True),
+    (Path("icons/dropforge.ico"), "./icons", True),
+    (Path("icons/dropforge-active.ico"), "./icons", True),
+    (Path("icons/dropforge-idle.ico"), "./icons", True),
+    (Path("icons/dropforge-error.ico"), "./icons", True),
+    (Path("icons/dropforge-maintenance.ico"), "./icons", True),
     # SeleniumWire HTTPS/SSL cert file and key
     (Path(SITE_PACKAGES_PATH, "seleniumwire/ca.crt"), "./seleniumwire", False),
     (Path(SITE_PACKAGES_PATH, "seleniumwire/ca.key"), "./seleniumwire", False),
@@ -128,7 +128,7 @@ try:
         console=console,
         optimize=optimize,
         exclude_binaries=one_dir,
-        icon="icons/pickaxe.ico",
+        icon="icons/dropforge.ico",
     )
 except PermissionError as exc:
     exc_text: str = format_exc()
@@ -149,6 +149,6 @@ if sys.platform == "darwin":
     app = BUNDLE(
         source,
         name=f'{app_name}.app',
-        icon="icons/pickaxe.ico",
-        bundle_identifier='com.twitchdrops.miner',
+        icon="icons/dropforge.ico",
+        bundle_identifier='io.github.himanm.dropforge',
     )

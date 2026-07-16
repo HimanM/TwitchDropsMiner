@@ -62,6 +62,53 @@ jobs:
         run: |
           python3 -m compileall -q tui tdminer.py network/twitch.py core/utils.py
 
+  web:
+    name: Linux Web UI
+    runs-on: ubuntu-latest
+    needs:
+      - validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/frontend/package-lock.json
+
+      - name: Install web dependencies
+        run: |
+          python3 -m pip install -r requirements-web.txt
+          npm ci --prefix web/frontend
+
+      - name: Build web frontend
+        run: |
+          npm run build --prefix web/frontend
+          git diff --exit-code -- web/static
+
+      - name: Test web server and installer
+        run: |
+          python3 -m unittest discover -s tests -p "test_web*.py" -v
+          python3 -m unittest discover -s tests -p "test_installer.py" -v
+          python3 -m compileall -q web tdminer_web.py tui/manager.py
+          bash -n scripts/install.sh
+
+      - name: Upload install scripts
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: error
+          name: DropForge.Install.Scripts
+          path: scripts/install.sh
+
   windows:
     name: Windows
     runs-on: windows-latest
@@ -114,18 +161,18 @@ jobs:
 
       - name: Create release folder
         run: |
-          $FolderName = 'Twitch Drops Miner'
+          $FolderName = 'DropForge'
           New-Item $FolderName -ItemType Directory
           Copy-Item dist\*.exe $FolderName
           Copy-Item manual.txt $FolderName
-          Compress-Archive -Path $FolderName -DestinationPath Twitch.Drops.Miner.Windows.zip
+          Compress-Archive -Path $FolderName -DestinationPath DropForge.Windows.zip
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.Windows
-          path: Twitch.Drops.Miner.Windows.zip
+          name: DropForge.Windows
+          path: DropForge.Windows.zip
 
   macos:
     name: macOS
@@ -166,18 +213,18 @@ jobs:
 
       - name: Create release folder and Zip
         run: |
-          FOLDER="Twitch Drops Miner"
+          FOLDER="DropForge"
           mkdir -p "$FOLDER"
-          cp -r "dist/Twitch Drops Miner (by HimanM).app" "$FOLDER/"
+          cp -r "dist/DropForge.app" "$FOLDER/"
           cp manual.txt "$FOLDER/"
-          zip -r Twitch.Drops.Miner.MacOS.zip "$FOLDER"
+          zip -r DropForge.MacOS.zip "$FOLDER"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.MacOS
-          path: Twitch.Drops.Miner.MacOS.zip
+          name: DropForge.MacOS
+          path: DropForge.MacOS.zip
 
   macos-tui:
     name: macOS TUI
@@ -207,14 +254,14 @@ jobs:
         run: |
           mkdir -p tdminer
           cp dist/tdminer tdminer/
-          zip -r Twitch.Drops.Miner.TUI.MacOS.zip tdminer
+          zip -r DropForge.TUI.MacOS.zip tdminer
 
       - name: Upload TUI build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.TUI.MacOS
-          path: Twitch.Drops.Miner.TUI.MacOS.zip
+          name: DropForge.TUI.MacOS
+          path: DropForge.TUI.MacOS.zip
 
   linux-tui:
     name: Linux TUI (${{matrix.arch}})
@@ -252,14 +299,14 @@ jobs:
         run: |
           mkdir -p tdminer
           cp dist/tdminer tdminer/
-          zip -r Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}.zip tdminer
+          zip -r DropForge.TUI.Linux-${{matrix.arch}}.zip tdminer
 
       - name: Upload TUI build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}
-          path: Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}.zip
+          name: DropForge.TUI.Linux-${{matrix.arch}}
+          path: DropForge.TUI.Linux-${{matrix.arch}}.zip
 
   linux-pyinstaller:
     name: Linux (PyInstaller) (${{matrix.arch}})
@@ -331,17 +378,17 @@ jobs:
 
       - name: Create release folder
         run: |
-          folder='Twitch Drops Miner'
+          folder='DropForge'
           mkdir "${folder}"
           cp manual.txt dist/* "${folder}"
-          7z a 'Twitch.Drops.Miner.Linux.PyInstaller-${{matrix.arch}}.zip' "${folder}"
+          7z a 'DropForge.Linux.PyInstaller-${{matrix.arch}}.zip' "${folder}"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.Linux.PyInstaller-${{matrix.arch}}
-          path: Twitch.Drops.Miner.Linux.PyInstaller-${{matrix.arch}}.zip
+          name: DropForge.Linux.PyInstaller-${{matrix.arch}}
+          path: DropForge.Linux.PyInstaller-${{matrix.arch}}.zip
 
   linux-appimage:
     name: Linux (AppImage) (${{matrix.arch}})
@@ -393,23 +440,24 @@ jobs:
 
       - name: Create release folder
         run: |
-          folder='Twitch Drops Miner'
+          folder='DropForge'
           mkdir "${folder}"
           cp *.AppImage manual.txt "${folder}"
-          7z a 'Twitch.Drops.Miner.Linux.AppImage-${{matrix.arch}}.zip' "${folder}"
+          7z a 'DropForge.Linux.AppImage-${{matrix.arch}}.zip' "${folder}"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.Linux.AppImage-${{matrix.arch}}
-          path: Twitch.Drops.Miner.Linux.AppImage-${{matrix.arch}}.zip
+          name: DropForge.Linux.AppImage-${{matrix.arch}}
+          path: DropForge.Linux.AppImage-${{matrix.arch}}.zip
 
   update_releases_page:
     name: Upload builds to Releases
     if: github.event_name != 'pull_request'
     needs:
       - windows
+      - web
       - linux-pyinstaller
       - linux-appimage
       - linux-tui
@@ -442,18 +490,22 @@ jobs:
           artifactErrorsFailBuild: true
           artifacts: artifacts/*/*
           body: |
-            **Twitch Drops Miner Release**
+            **DropForge Release**
 
             - Build date: `${{steps.vars.outputs.date_now}}`
             - Reference commit: ${{github.sha}}
 
-            **Terminal UI install**
+            **Linux server or CLI install**
 
-            Linux/macOS:
+            Linux:
 
             ```sh
             curl -fsSL https://raw.githubusercontent.com/HimanM/TwitchDropsMiner/main/scripts/install.sh | sh
             ```
+
+            Choose the authenticated DropForge Web UI or terminal CLI when prompted. Web installs default to localhost on port `17473`; use Tailscale Serve for private remote access or explicitly select `0.0.0.0` for a trusted LAN.
+
+            macOS uses the same command and installs the terminal release.
 
             On Termux, install prerequisites first:
 
@@ -461,11 +513,11 @@ jobs:
             pkg install python clang curl tar
             ```
 
-            Run `tdminer tui` for the richer Linux/macOS Textual interface, or `tdminer cli` for the portable prompt-based interface used by Windows/source installs and Termux-style terminals.
+            Run `tdminer tui` for the richer macOS Textual interface, or `tdminer cli` for the portable prompt-based interface used by source installs and Termux-style terminals.
 
             The portable CLI includes a boxed slash-command input. Type `/` for commands, `/priority add ` or `/exclude add ` for game completion, and `/switch ` for channel completion.
 
-            The `tdminer` release binaries are self-contained and do not require Linux/macOS users to install Python first. The binary installer needs `curl` and `unzip`, installs to `~/.local/bin` by default, and can be redirected with `TDMINER_INSTALL_DIR=/path/to/bin`.
+            The Linux installer manages source releases, dependencies, systemd, and persistent data under `~/.local/share/tdminer`. The macOS release binary is self-contained. Launchers install to `~/.local/bin` by default and can be redirected with `TDMINER_INSTALL_DIR=/path/to/bin`.
 
           name: "Release v${{steps.vars.outputs.app_version}}"
           prerelease: false

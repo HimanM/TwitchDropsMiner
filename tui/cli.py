@@ -693,12 +693,12 @@ class PortableCLIManager(TUIManager):
             )
             console.print()
             console.print(
-                Text("Twitch Drops Miner", style=f"bold {_C_AMBER}"),
+                Text("DropForge", style=f"bold {_C_AMBER}"),
                 justify="center",
             )
         else:
             console.print(
-                Text("TDMinER", style=f"bold {_C_CYAN}"),
+                Text("DropForge", style=f"bold {_C_CYAN}"),
                 justify="center",
             )
             console.print(
@@ -726,9 +726,9 @@ class PortableCLIManager(TUIManager):
         console = Console(file=StringIO(), width=width, force_terminal=True)
         right = datetime.now().strftime("%H:%M:%S")
         title = Text()
-        title.append("TDMinER ", style=f"bold {_C_CYAN}")
+        title.append("DropForge ", style=f"bold {_C_CYAN}")
         title.append("by HimanM", style=_C_DIM)
-        padding = max(1, width - len("TDMinER by HimanM") - len(right) - 2)
+        padding = max(1, width - len("DropForge by HimanM") - len(right) - 2)
         title.append(" " * padding)
         title.append(right, style=_C_DIM)
         console.print(title)

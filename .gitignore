@@ -31,3 +31,4 @@ settings.json
 /graphify-out
 /web/frontend/node_modules/
 /web/frontend/*.tsbuildinfo
+/scripts/build_icons.py

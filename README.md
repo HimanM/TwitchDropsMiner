@@ -61,10 +61,39 @@ Web service commands:
 
 ```sh
 tdminer-web status
+tdminer-web start
+tdminer-web stop
 tdminer-web restart
 tdminer-web logs
 tdminer-web reset-password
 ```
+
+Stopping `tdminer-web` stops both the Web UI and mining. Starting it again resumes the saved installation and Twitch session.
+
+To uninstall the default Web UI installation while keeping `~/.local/share/tdminer/data` for a later reinstall:
+
+```sh
+sudo systemctl disable --now tdminer-web.service
+sudo rm -f /etc/systemd/system/tdminer-web.service
+sudo systemctl daemon-reload
+rm -f ~/.local/bin/tdminer-web
+rm -rf ~/.local/share/tdminer/releases ~/.local/share/tdminer/current
+rm -f ~/.local/share/tdminer/install-mode ~/.local/share/tdminer/web-host
+```
+
+If the installer opened port `17473` in UFW, remove that rule too:
+
+```sh
+sudo ufw delete allow 17473/tcp
+```
+
+For a complete uninstall, including the Twitch cookie jar, settings, web password, recovery data, and browser sessions, also run:
+
+```sh
+rm -rf ~/.local/share/tdminer
+```
+
+The last command permanently deletes all DropForge data. If `TDMINER_INSTALL_DIR` or `TDMINER_APP_DIR` was customized during installation, use those paths instead.
 
 Passwords and recovery codes are salted and hashed with scrypt. Session cookies are opaque, HttpOnly, and cleared on website logout. Website logout does not stop mining or clear the Twitch cookie jar. Binding to `0.0.0.0` uses HTTP, so use it only on a trusted network; localhost plus Tailscale Serve is recommended for private HTTPS remote access.
 

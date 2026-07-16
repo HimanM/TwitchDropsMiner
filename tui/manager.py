@@ -533,7 +533,7 @@ class TUIManager:
         self._twitch.change_state(State.INVENTORY_FETCH)
 
     def _invalidate_auth(self) -> None:
-        self._twitch.invalidate()
+        self._twitch._auth_state.invalidate()
         self._twitch.change_state(State.RESTART)
 
     def _switch_channel(self) -> None:

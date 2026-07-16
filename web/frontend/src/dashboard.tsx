@@ -36,8 +36,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -439,7 +441,7 @@ function SettingsPanel({ draft, dirty, busy, session, onChange, onSave, onInvali
       </SettingsGroup>
       <SettingsGroup title="Security" icon={<KeyIcon />}>
         <p className="text-sm leading-relaxed text-muted-foreground">Changing the admin password revokes every browser session. Invalidating Twitch auth removes the saved Twitch token and starts device login again.</p>
-        <div className="flex flex-wrap gap-2"><PasswordDialog session={session} onSignedOut={onSignedOut} /><Button variant="destructive" disabled={busy === "invalidate"} onClick={onInvalidate}>Reset Twitch login</Button></div>
+        <div className="flex flex-wrap gap-2"><PasswordDialog session={session} onSignedOut={onSignedOut} /><ResetTwitchDialog busy={busy === "invalidate"} onConfirm={onInvalidate} /></div>
       </SettingsGroup>
     </div>
   </PageFrame>
@@ -453,10 +455,15 @@ function GameList({ games, onRemove, onMove }: { games: string[]; onRemove: (gam
 function PasswordDialog({ session, onSignedOut }: { session: SessionMeta; onSignedOut: () => void }) {
   const [current, setCurrent] = useState("")
   const [next, setNext] = useState("")
+  const [confirm, setConfirm] = useState("")
   const [error, setError] = useState("")
   const [busy, setBusy] = useState(false)
-  async function submit(event: FormEvent) { event.preventDefault(); setBusy(true); setError(""); try { await readResponse(await fetch("/api/password/change", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-Token": session.csrf_token }, body: JSON.stringify({ current_password: current, new_password: next }) })); onSignedOut() } catch (reason) { setError(reason instanceof Error ? reason.message : "Password change failed.") } finally { setBusy(false) } }
-  return <Dialog><DialogTrigger render={<Button variant="outline" />}>Change admin password</DialogTrigger><DialogContent><DialogHeader><DialogTitle>Change admin password</DialogTitle><DialogDescription>All signed-in browsers will be logged out.</DialogDescription></DialogHeader><form className="space-y-4" onSubmit={submit}><Field label="Current password" description="Confirm the existing administrator password."><Input type="password" autoComplete="current-password" value={current} onChange={(event) => setCurrent(event.target.value)} required /></Field><Field label="New password" description="Use at least 12 characters."><Input type="password" autoComplete="new-password" minLength={12} value={next} onChange={(event) => setNext(event.target.value)} required /></Field>{error && <p className="text-sm text-destructive" role="alert">{error}</p>}<Button className="w-full" disabled={busy} type="submit">{busy ? "Changing" : "Change password"}</Button></form></DialogContent></Dialog>
+  async function submit(event: FormEvent) { event.preventDefault(); setError(""); if (next !== confirm) { setError("New passwords do not match."); return } setBusy(true); try { await readResponse(await fetch("/api/password/change", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-Token": session.csrf_token }, body: JSON.stringify({ current_password: current, new_password: next }) })); onSignedOut() } catch (reason) { setError(reason instanceof Error ? reason.message : "Password change failed.") } finally { setBusy(false) } }
+  return <Dialog><DialogTrigger render={<Button variant="outline" />}>Change admin password</DialogTrigger><DialogContent><DialogHeader><DialogTitle>Change admin password</DialogTitle><DialogDescription>All signed-in browsers will be logged out.</DialogDescription></DialogHeader><form className="space-y-4" onSubmit={submit}><Field label="Current password" description="Confirm the existing administrator password."><Input type="password" autoComplete="current-password" value={current} onChange={(event) => setCurrent(event.target.value)} required /></Field><Field label="New password" description="Use at least 12 characters."><Input type="password" autoComplete="new-password" minLength={12} value={next} onChange={(event) => setNext(event.target.value)} required /></Field><Field label="Confirm new password" description="Enter the new password again."><Input type="password" autoComplete="new-password" minLength={12} value={confirm} onChange={(event) => setConfirm(event.target.value)} required /></Field>{error && <p className="text-sm text-destructive" role="alert">{error}</p>}<Button className="w-full" disabled={busy} type="submit">{busy ? "Changing" : "Change password"}</Button></form></DialogContent></Dialog>
+}
+
+function ResetTwitchDialog({ busy, onConfirm }: { busy: boolean; onConfirm: () => void }) {
+  return <Dialog><DialogTrigger render={<Button variant="destructive" disabled={busy} />}>Reset Twitch login</DialogTrigger><DialogContent className="sm:max-w-md"><DialogHeader><DialogTitle>Reset Twitch login?</DialogTitle><DialogDescription>This removes the saved Twitch authorization and starts device login again. Mining pauses until you reconnect.</DialogDescription></DialogHeader><DialogFooter><DialogClose render={<Button variant="outline" />}>Cancel</DialogClose><DialogClose render={<Button variant="destructive" onClick={onConfirm} />}>Reset Twitch login</DialogClose></DialogFooter></DialogContent></Dialog>
 }
 
 function Logs({ logs }: { logs: string[] }) {

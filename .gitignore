@@ -7,7 +7,7 @@ __pycache__
 /*.exe
 /*.zip
 /*.tmp
-/Twitch Drops Miner
+/DropForge
 # Dev files
 *.new
 /env

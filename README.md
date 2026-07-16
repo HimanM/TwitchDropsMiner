@@ -1,14 +1,18 @@
-# Twitch Drops Miner by HimanM
+<p align="center">
+  <img src="icons/dropforge.png" alt="DropForge icon" width="160">
+</p>
 
-A personalized fork of Twitch Drops Miner focused on desktop use, Linux/headless use, and a portable terminal interface.
+# DropForge
+
+DropForge is HimanM's desktop, server, and terminal Twitch drops miner.
 
 The miner advances Twitch drop progress without playing video. It logs in to Twitch, discovers campaigns, picks eligible channels, switches channels when needed, and claims drop progress in the background.
 
 ## Features
 
-- GUI build for normal desktop use.
+- DropForge desktop GUI for normal desktop use.
 - DropForge Web UI for authenticated, image-rich Linux server control from desktop or mobile browsers.
-- Terminal UI through `tdminer`.
+- DropForge terminal UI through `tdminer`.
 - Portable CLI mode for headless Linux, SSH sessions, Termux source installs, and terminals where full TUIs are awkward.
 - Twitch device-code login for terminal sessions.
 - Saved login through `cookies.jar`.
@@ -235,7 +239,7 @@ python tdminer.py cli
 
 ## Build Notes
 
-- GUI builds use the original desktop packaging paths.
+- Desktop GUI builds are packaged as DropForge applications.
 - `tdminer` release binaries are built with PyInstaller.
 - Linux release binaries require compatible glibc Linux systems.
 - Termux uses source install instead of release binaries.

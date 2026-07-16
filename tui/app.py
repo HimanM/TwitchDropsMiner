@@ -268,8 +268,8 @@ class TwitchDropsTUI(App[None]):
         yield Footer()
 
     def on_mount(self) -> None:
-        self.title = "Twitch Drops Miner TUI"
-        self.sub_title = "tdminer"
+        self.title = "DropForge"
+        self.sub_title = "Twitch drops miner"
         self._setup_tables()
         self._ready_for_refresh = True
         self.refresh_all()

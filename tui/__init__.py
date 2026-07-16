@@ -1,2 +1,2 @@
-"""Textual frontend for Twitch Drops Miner."""
+"""DropForge Textual frontend."""
 

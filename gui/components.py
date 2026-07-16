@@ -1077,17 +1077,17 @@ class ChannelList:
 
 
 class TrayIcon:
-    TITLE = "Twitch Drops Miner"
+    TITLE = "DropForge"
 
     def __init__(self, manager: GUIManager, master: ttk.Widget):
         self._manager = manager
         self.icon: pystray.Icon | None = None  # type: ignore[unused-ignore]
         self._icon_images: dict[str, Image_module.Image] = {
-            "pickaxe": Image_module.open(resource_path("icons/pickaxe.ico")),
-            "active": Image_module.open(resource_path("icons/active.ico")),
-            "idle": Image_module.open(resource_path("icons/idle.ico")),
-            "error": Image_module.open(resource_path("icons/error.ico")),
-            "maint": Image_module.open(resource_path("icons/maint.ico")),
+            "pickaxe": Image_module.open(resource_path("icons/dropforge.ico")),
+            "active": Image_module.open(resource_path("icons/dropforge-active.ico")),
+            "idle": Image_module.open(resource_path("icons/dropforge-idle.ico")),
+            "error": Image_module.open(resource_path("icons/dropforge-error.ico")),
+            "maint": Image_module.open(resource_path("icons/dropforge-maintenance.ico")),
         }
         self._icon_state: str = "pickaxe"
         self._button = ttk.Button(master, command=self.minimize, text=_("gui", "tray", "minimize"))
@@ -1146,7 +1146,7 @@ class TrayIcon:
             pystray.MenuItem(_("gui", "tray", "quit"), bridge(self.quit)),
         )
         self.icon = pystray.Icon(
-            "twitch_miner", self._icon_images[self._icon_state], self.get_title(drop), menu
+            "dropforge", self._icon_images[self._icon_state], self.get_title(drop), menu
         )
         # self.icon.run_detached()
         loop.run_in_executor(None, self.icon.run)
@@ -1569,7 +1569,7 @@ class _SettingsVars(TypedDict):
 
 
 class SettingsPanel:
-    AUTOSTART_NAME: str = "TwitchDropsMiner"
+    AUTOSTART_NAME: str = "DropForge"
     AUTOSTART_KEY: str = "HKCU/Software/Microsoft/Windows/CurrentVersion/Run"
 
     @cached_property
@@ -1963,7 +1963,7 @@ class SettingsPanel:
                     f"""
                     [Desktop Entry]
                     Type=Application
-                    Name=Twitch Drops Miner
+                    Name=DropForge
                     Description=Mine timed drops on Twitch
                     Exec=sh -c '{self._get_autostart_path()}'
                     """
@@ -2221,7 +2221,7 @@ class GUIManager:
         # withdraw immediately to prevent the window from flashing
         self._root.withdraw()
         # root.resizable(False, True)
-        set_root_icon(root, resource_path("icons/pickaxe.ico"))
+        set_root_icon(root, resource_path("icons/dropforge.ico"))
         root.title(WINDOW_TITLE)  # window title
         root.bind_all("<KeyPress-Escape>", self.unfocus)  # pressing ESC unfocuses selection
         # Image cache for displaying images

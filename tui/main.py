@@ -82,7 +82,7 @@ class ParsedArgs(argparse.Namespace):
 def parse_args(argv: list[str] | None = None) -> ParsedArgs:
     parser = Parser(
         SELF_PATH.name,
-        description="A terminal UI for mining timed Twitch drops.",
+        description="DropForge terminal interface for mining timed Twitch drops.",
     )
     parser.add_argument("--version", action="version", version=f"v{__version__}")
     parser.add_argument(

@@ -227,7 +227,7 @@ export function Dashboard({ session, onSignedOut }: Props) {
           <img className="size-9 rounded-xl ring-1 ring-border" src="/favicon-v2.png" alt="DropForge icon" />
           <div className="min-w-0">
             <p className="truncate font-semibold leading-tight tracking-tight">DropForge</p>
-            <p className="truncate text-[11px] text-muted-foreground">Twitch Drops Miner</p>
+            <p className="truncate text-[11px] text-muted-foreground">Self-hosted drops miner</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Badge className={cn("hidden sm:inline-flex", state.miner.running ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300" : "bg-muted text-muted-foreground")} variant="secondary">
@@ -324,7 +324,7 @@ export function Dashboard({ session, onSignedOut }: Props) {
 
       <footer className="shrink-0 border-t border-border bg-background">
         <div className="mx-auto flex max-w-[1500px] flex-col gap-2 px-4 py-3 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span>DropForge {session.version.replaceAll("_", " ")}. Self-hosted Twitch Drops Miner.</span>
+          <span>DropForge {session.version.replaceAll("_", " ")}. Self-hosted Twitch drops miner.</span>
           <div className="flex flex-wrap gap-4"><a className="hover:text-foreground" href="https://www.twitch.tv/drops/inventory" rel="noreferrer" target="_blank">Twitch inventory</a><a className="hover:text-foreground" href="https://www.twitch.tv/drops/campaigns" rel="noreferrer" target="_blank">All campaigns</a><a className="flex items-center gap-1 hover:text-foreground" href="https://github.com/HimanM" rel="noreferrer" target="_blank"><GithubLogoIcon /> HimanM</a></div>
         </div>
       </footer>

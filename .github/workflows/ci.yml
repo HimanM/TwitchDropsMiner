@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.Install.Scripts
+          name: DropForge.Install.Scripts
           path: scripts/install.sh
 
   windows:
@@ -161,18 +161,18 @@ jobs:
 
       - name: Create release folder
         run: |
-          $FolderName = 'Twitch Drops Miner'
+          $FolderName = 'DropForge'
           New-Item $FolderName -ItemType Directory
           Copy-Item dist\*.exe $FolderName
           Copy-Item manual.txt $FolderName
-          Compress-Archive -Path $FolderName -DestinationPath Twitch.Drops.Miner.Windows.zip
+          Compress-Archive -Path $FolderName -DestinationPath DropForge.Windows.zip
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.Windows
-          path: Twitch.Drops.Miner.Windows.zip
+          name: DropForge.Windows
+          path: DropForge.Windows.zip
 
   macos:
     name: macOS
@@ -213,18 +213,18 @@ jobs:
 
       - name: Create release folder and Zip
         run: |
-          FOLDER="Twitch Drops Miner"
+          FOLDER="DropForge"
           mkdir -p "$FOLDER"
-          cp -r "dist/Twitch Drops Miner (by HimanM).app" "$FOLDER/"
+          cp -r "dist/DropForge.app" "$FOLDER/"
           cp manual.txt "$FOLDER/"
-          zip -r Twitch.Drops.Miner.MacOS.zip "$FOLDER"
+          zip -r DropForge.MacOS.zip "$FOLDER"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.MacOS
-          path: Twitch.Drops.Miner.MacOS.zip
+          name: DropForge.MacOS
+          path: DropForge.MacOS.zip
 
   macos-tui:
     name: macOS TUI
@@ -254,14 +254,14 @@ jobs:
         run: |
           mkdir -p tdminer
           cp dist/tdminer tdminer/
-          zip -r Twitch.Drops.Miner.TUI.MacOS.zip tdminer
+          zip -r DropForge.TUI.MacOS.zip tdminer
 
       - name: Upload TUI build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.TUI.MacOS
-          path: Twitch.Drops.Miner.TUI.MacOS.zip
+          name: DropForge.TUI.MacOS
+          path: DropForge.TUI.MacOS.zip
 
   linux-tui:
     name: Linux TUI (${{matrix.arch}})
@@ -299,14 +299,14 @@ jobs:
         run: |
           mkdir -p tdminer
           cp dist/tdminer tdminer/
-          zip -r Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}.zip tdminer
+          zip -r DropForge.TUI.Linux-${{matrix.arch}}.zip tdminer
 
       - name: Upload TUI build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}
-          path: Twitch.Drops.Miner.TUI.Linux-${{matrix.arch}}.zip
+          name: DropForge.TUI.Linux-${{matrix.arch}}
+          path: DropForge.TUI.Linux-${{matrix.arch}}.zip
 
   linux-pyinstaller:
     name: Linux (PyInstaller) (${{matrix.arch}})
@@ -378,17 +378,17 @@ jobs:
 
       - name: Create release folder
         run: |
-          folder='Twitch Drops Miner'
+          folder='DropForge'
           mkdir "${folder}"
           cp manual.txt dist/* "${folder}"
-          7z a 'Twitch.Drops.Miner.Linux.PyInstaller-${{matrix.arch}}.zip' "${folder}"
+          7z a 'DropForge.Linux.PyInstaller-${{matrix.arch}}.zip' "${folder}"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.Linux.PyInstaller-${{matrix.arch}}
-          path: Twitch.Drops.Miner.Linux.PyInstaller-${{matrix.arch}}.zip
+          name: DropForge.Linux.PyInstaller-${{matrix.arch}}
+          path: DropForge.Linux.PyInstaller-${{matrix.arch}}.zip
 
   linux-appimage:
     name: Linux (AppImage) (${{matrix.arch}})
@@ -440,17 +440,17 @@ jobs:
 
       - name: Create release folder
         run: |
-          folder='Twitch Drops Miner'
+          folder='DropForge'
           mkdir "${folder}"
           cp *.AppImage manual.txt "${folder}"
-          7z a 'Twitch.Drops.Miner.Linux.AppImage-${{matrix.arch}}.zip' "${folder}"
+          7z a 'DropForge.Linux.AppImage-${{matrix.arch}}.zip' "${folder}"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Twitch.Drops.Miner.Linux.AppImage-${{matrix.arch}}
-          path: Twitch.Drops.Miner.Linux.AppImage-${{matrix.arch}}.zip
+          name: DropForge.Linux.AppImage-${{matrix.arch}}
+          path: DropForge.Linux.AppImage-${{matrix.arch}}.zip
 
   update_releases_page:
     name: Upload builds to Releases
@@ -490,7 +490,7 @@ jobs:
           artifactErrorsFailBuild: true
           artifacts: artifacts/*/*
           body: |
-            **Twitch Drops Miner Release**
+            **DropForge Release**
 
             - Build date: `${{steps.vars.outputs.date_now}}`
             - Reference commit: ${{github.sha}}

@@ -1,6 +1,6 @@
-###################################
-# Twitch Drops Miner (by HimanM) #
-###################################
+#####################
+# DropForge by HimanM #
+#####################
 
 Available command line arguments:
 

@@ -57,7 +57,7 @@ def serve(host: str, port: int, no_auto_start: bool) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="DropForge self-hosted Twitch Drops Miner web UI")
+    parser = argparse.ArgumentParser(description="DropForge self-hosted Twitch drops web UI")
     sub = parser.add_subparsers(dest="command", required=True)
     serve_parser = sub.add_parser("serve")
     serve_parser.add_argument("--host", default=os.environ.get("TDMINER_HOST", "127.0.0.1"))

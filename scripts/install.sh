@@ -262,7 +262,7 @@ EOF
 
   cat > "$tmp_dir/$SERVICE_NAME.service" <<EOF
 [Unit]
-Description=DropForge Twitch Drops Miner Web UI
+Description=DropForge Web UI
 After=network-online.target
 Wants=network-online.target
 
@@ -377,7 +377,7 @@ done
 
 case "$os" in
   Darwin)
-    asset="Twitch.Drops.Miner.TUI.MacOS.zip"
+    asset="DropForge.TUI.MacOS.zip"
     binary="tdminer"
     ;;
   *)

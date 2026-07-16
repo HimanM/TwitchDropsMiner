@@ -1,1 +1,1 @@
-"""Self-hosted web frontend for Twitch Drops Miner."""
+"""DropForge self-hosted web frontend."""

@@ -46,13 +46,13 @@ AppDir:
     arch:
       - '{{ARCH_APT}}'
     sources:
-      - sourceline: deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy main
-      - sourceline: deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-updates main
-      - sourceline: deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-security main
-      - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy main
-      - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-updates main
-      - sourceline: deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ jammy-security main
-        key_url: http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x871920D1991BC93C
+      - sourceline: deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ jammy main
+      - sourceline: deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ jammy-updates main
+      - sourceline: deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ jammy-security main
+      - sourceline: deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ jammy main
+      - sourceline: deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ jammy-updates main
+      - sourceline: deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ jammy-security main
+        key_url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x871920D1991BC93C
 
     include:
       - gir1.2-ayatanaappindicator3-0.1

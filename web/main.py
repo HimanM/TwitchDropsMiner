@@ -9,7 +9,7 @@ from pathlib import Path
 from aiohttp import web
 
 from core.constants import WORKING_DIR
-from web.auth import AuthStore
+from web.auth import AuthStore, PASSWORD_MIN_LENGTH, validate_password
 from web.server import create_app
 
 
@@ -17,7 +17,13 @@ DEFAULT_PORT = 17473
 
 
 def _password(confirm: bool = True) -> str:
-    password = os.environ.get("TDMINER_ADMIN_PASSWORD") or getpass.getpass("New admin password: ")
+    password = os.environ.get("TDMINER_ADMIN_PASSWORD") or getpass.getpass(
+        f"New admin password ({PASSWORD_MIN_LENGTH}+ characters): "
+    )
+    try:
+        validate_password(password)
+    except ValueError as exc:
+        raise SystemExit(f"Invalid password: {exc}") from None
     if confirm and "TDMINER_ADMIN_PASSWORD" not in os.environ:
         if password != getpass.getpass("Confirm admin password: "):
             raise SystemExit("Passwords do not match.")

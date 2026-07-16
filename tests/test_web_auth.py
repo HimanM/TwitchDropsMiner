@@ -1,11 +1,13 @@
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 from types import SimpleNamespace
 
 from aiohttp.test_utils import TestClient, TestServer
 
 from web.auth import AuthStore
+from web.main import _password
 from web.controller import MinerController
 from web.server import create_app
 
@@ -36,6 +38,13 @@ class AuthStoreTests(unittest.TestCase):
         self.assertIsNone(
             self.store.reset_password("recovery-code-long-enough", "third correct horse battery")
         )
+
+
+class PasswordPromptTests(unittest.TestCase):
+    def test_short_password_exits_without_reaching_confirmation(self) -> None:
+        with patch("web.main.getpass.getpass", return_value="short"):
+            with self.assertRaisesRegex(SystemExit, "Invalid password: Password must be at least 12"):
+                _password()
 
 
 class WebStateTests(unittest.TestCase):

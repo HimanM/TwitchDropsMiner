@@ -26,6 +26,9 @@ class TUIApplicationTests(unittest.IsolatedAsyncioTestCase):
             on_set_priority_mode=callbacks.get("on_set_priority_mode", lambda mode: None),
             on_set_farm_unlinked=callbacks.get("on_set_farm_unlinked", lambda enabled: None),
             on_set_badges_emotes=callbacks.get("on_set_badges_emotes", lambda enabled: None),
+            on_set_trust_allowed_channels=callbacks.get(
+                "on_set_trust_allowed_channels", lambda enabled: None
+            ),
             on_ready=on_ready,
         )
 

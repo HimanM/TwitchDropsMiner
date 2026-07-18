@@ -104,10 +104,11 @@ class WebManager(TUIManager):
             self._set_badges_emotes(payload["enable_badges_emotes"])
         settings = self._twitch.settings
         restart_keys = {"proxy", "language", "connection_quality"}
-        for key in restart_keys | {"available_drops_check"}:
+        channel_keys = {"available_drops_check", "trust_allowed_channels"}
+        for key in restart_keys | channel_keys:
             if key in payload:
                 setattr(settings, key, URL(payload[key]) if key == "proxy" else payload[key])
-        if restart_keys & payload.keys() or "available_drops_check" in payload:
+        if (restart_keys | channel_keys) & payload.keys():
             settings.save()
             self._update_settings_text()
             self.print("Server settings saved. Restart the miner to apply connection changes.")
@@ -168,6 +169,9 @@ class WebManager(TUIManager):
                 "farm_unlinked": self.state.farm_unlinked,
                 "enable_badges_emotes": self.state.enable_badges_emotes,
                 "available_drops_check": bool(self._twitch.settings.available_drops_check),
+                "trust_allowed_channels": bool(
+                    getattr(self._twitch.settings, "trust_allowed_channels", False)
+                ),
                 "proxy": str(self._twitch.settings.proxy),
                 "language": self._twitch.settings.language,
                 "languages": ["English", *(path.stem for path in sorted(LANG_PATH.glob("*.json")))],

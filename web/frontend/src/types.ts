@@ -62,6 +62,7 @@ export type Settings = {
   farm_unlinked: boolean
   enable_badges_emotes: boolean
   available_drops_check: boolean
+  trust_allowed_channels: boolean
   proxy: string
   language: string
   languages: string[]

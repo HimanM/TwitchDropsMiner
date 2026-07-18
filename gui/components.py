@@ -1565,6 +1565,7 @@ class _SettingsVars(TypedDict):
     tray_notifications: IntVar
     enable_badges_emotes: IntVar
     available_drops_check: IntVar
+    trust_allowed_channels: IntVar
     farm_unlinked: IntVar
 
 
@@ -1604,6 +1605,9 @@ class SettingsPanel:
             ),
             "available_drops_check": IntVar(
                 master, int(self._settings.available_drops_check)
+            ),
+            "trust_allowed_channels": IntVar(
+                master, int(self._settings.trust_allowed_channels)
             ),
             "farm_unlinked": IntVar(
                 master, int(self._settings.farm_unlinked)
@@ -1742,6 +1746,18 @@ class SettingsPanel:
                 self._settings,
                 "available_drops_check",
                 bool(self._vars["available_drops_check"].get()),
+            ),
+        ).grid(column=1, row=irow, sticky="w")
+        ttk.Label(
+            advanced_center, text=_("gui", "settings", "advanced", "trust_allowed_channels")
+        ).grid(column=0, row=(irow := irow + 1), sticky="e")
+        ttk.Checkbutton(
+            advanced_center,
+            variable=self._vars["trust_allowed_channels"],
+            command=lambda: setattr(
+                self._settings,
+                "trust_allowed_channels",
+                bool(self._vars["trust_allowed_channels"].get()),
             ),
         ).grid(column=1, row=irow, sticky="w")
         ttk.Label(
@@ -2838,6 +2854,8 @@ if __name__ == "__main__":
                 tray_notifications=True,
                 enable_badges_emotes=False,
                 available_drops_check=False,
+                trust_allowed_channels=False,
+                farm_unlinked=False,
                 logging_level=LOGGING_LEVELS[0],
                 priority_mode=PriorityMode.PRIORITY_ONLY,
             )

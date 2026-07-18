@@ -503,6 +503,7 @@ function SettingsPanel({ draft, dirty, busy, session, notifications, notificatio
         <Toggle label="Farm unlinked drops" description={priorityOnly ? "Farm campaigns that do not require a linked game account." : "Available only when Priority mode is Priority list only."} checked={priorityOnly && Boolean(draft.farm_unlinked)} disabled={!priorityOnly} onChange={(value) => onChange("farm_unlinked", value)} />
         <Toggle label="Badge and emote drops" description="Include campaigns whose rewards are badges or emotes." checked={Boolean(draft.enable_badges_emotes)} onChange={(value) => onChange("enable_badges_emotes", value)} />
         <Toggle label="Extra availability check" description="Run the additional Twitch availability lookup." checked={Boolean(draft.available_drops_check)} onChange={(value) => onChange("available_drops_check", value)} />
+        <Toggle label="Trust allowed channels" description="Use a campaign's explicit channel list when Twitch's availability lookup omits it." checked={Boolean(draft.trust_allowed_channels)} onChange={(value) => onChange("trust_allowed_channels", value)} />
       </SettingsGroup>
       <SettingsGroup title="Connection" icon={<GlobeIcon />}>
         <Field label="Proxy URL" description="Optional HTTP or HTTPS proxy. Restart the miner after changing it."><Input value={draft.proxy || ""} placeholder="https://proxy.example:8080" onChange={(event) => onChange("proxy", event.target.value)} /></Field>

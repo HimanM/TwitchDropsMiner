@@ -324,12 +324,18 @@ class Channel:
         return URLType(match.group(1))
 
     def _check_drops_enabled(self, available_drops: list[JsonType]) -> bool:
-        return any(
+        if any(
             (
                 (campaign := self._twitch._campaigns.get(campaign_data["id"])) is not None
                 and campaign.can_earn(self, ignore_channel_status=True)
             )
             for campaign_data in available_drops
+        ):
+            return True
+        return self.acl_based and self._twitch.settings.trust_allowed_channels and any(
+            self in campaign.allowed_channels
+            and campaign.can_earn(self, ignore_channel_status=True)
+            for campaign in self._twitch._campaigns.values()
         )
 
     def external_update(self, channel_data: JsonType, available_drops: list[JsonType]):

@@ -22,6 +22,7 @@ class SettingsFile(TypedDict):
     tray_notifications: bool
     enable_badges_emotes: bool
     available_drops_check: bool
+    trust_allowed_channels: bool
     farm_unlinked: bool
     priority_mode: PriorityMode
 
@@ -37,6 +38,7 @@ default_settings: SettingsFile = {
     "tray_notifications": True,
     "enable_badges_emotes": False,
     "available_drops_check": False,
+    "trust_allowed_channels": False,
     "farm_unlinked": False,
     "priority_mode": PriorityMode.PRIORITY_ONLY,
 }
@@ -62,6 +64,7 @@ class Settings:
     tray_notifications: bool
     enable_badges_emotes: bool
     available_drops_check: bool
+    trust_allowed_channels: bool
     farm_unlinked: bool
     priority_mode: PriorityMode
 

@@ -15,6 +15,7 @@ class SettingsStub:
         self.exclude = set()
         self.farm_unlinked = False
         self.enable_badges_emotes = False
+        self.trust_allowed_channels = False
         self.priority_mode = PriorityMode.PRIORITY_ONLY
         self.saved = False
 
@@ -146,6 +147,15 @@ class PortableCLITests(unittest.TestCase):
 
         self.assertTrue(manager.state.enable_badges_emotes)
         self.assertTrue(manager._twitch.settings.enable_badges_emotes)
+        self.assertTrue(manager._twitch.settings.saved)
+
+    def test_trust_allowed_command_updates_setting(self):
+        manager = self.make_manager()
+
+        manager._handle_command("/trust-allowed on")
+
+        self.assertTrue(manager.state.trust_allowed_channels)
+        self.assertTrue(manager._twitch.settings.trust_allowed_channels)
         self.assertTrue(manager._twitch.settings.saved)
 
     def test_print_logs_without_textual_app(self):
